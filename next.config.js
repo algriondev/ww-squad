@@ -1,9 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  optimizeFonts: false,
   compress: true,
-  poweredBy: false,
+
+  // Turbopack: pin the workspace root to THIS folder so it ignores
+  // any stray package-lock.json sitting in C:\Users\HP\
+  turbopack: {
+    root: __dirname,
+  },
 };
 
 module.exports = nextConfig;

@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 
 // ── Meta ──────────────────────────────────────────
 export const metadata: Metadata = {
-  title: "WW SQUAD | The End of Average",
+  title: "Workout Warehouse | The End of Average",
   description:
-    "WW SQUAD — A people-first fitness movement. Luxury. Edge. Speed. Community. London-based, globally minded.",
+    "Workout Warehouse — A people-first fitness movement. Luxury. Edge. Speed. Community. Highway Mall, Nairobi.",
   keywords: [
-    "WW SQUAD",
-    "gym London",
+    "Workout Warehouse",
+    "gym Nairobi",
     "fitness community",
     "personal training",
     "HIIT",
@@ -15,18 +15,20 @@ export const metadata: Metadata = {
   ],
   // Open Graph (social previews)
   openGraph: {
-    title: "WW SQUAD | The End of Average",
+    title: "Workout Warehouse | The End of Average",
     description:
-      "Not a gym. A movement. WW SQUAD fuses luxury, raw energy, speed and tech into one obsessive fitness experience.",
+      "Not a gym. A movement. Workout Warehouse fuses luxury, raw energy, speed and tech into one obsessive fitness experience.",
     type: "website",
-    locale: "en_GB",
+    locale: "en_KE",
   },
   // Viewport — critical for mobile
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1, // prevents iOS pinch-zoom that breaks the layout
-  },
+};
+
+// Viewport must be exported separately in Next.js 14+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 // ── Dynamic title by time-of-day (server-side, runs on every request) ──
@@ -70,7 +72,7 @@ export default function RootLayout({
                         h>=12&&h<17 ? "Midday grind starts now." :
                         h>=17&&h<21 ? "Evening session. Let's go." :
                         "Late Night Session? We're Open.";
-                document.title = t + " | WW SQUAD";
+                document.title = t + " | Workout Warehouse";
               })();
             `,
           }}

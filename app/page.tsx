@@ -1,7 +1,7 @@
 "use client";
 
-import WWSquad from "@/components/WWSquad";
+import WorkoutWarehouse from "@/components/WorkoutWarehouse";
 
 export default function Home() {
-  return <WWSquad />;
+  return <WorkoutWarehouse />;
 }

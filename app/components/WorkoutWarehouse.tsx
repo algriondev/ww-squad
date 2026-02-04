@@ -3,22 +3,25 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
 /* ───────────────────────────────────────────
-   DESIGN TOKENS
+   DESIGN TOKENS — WORKOUT WAREHOUSE REBRAND
 ─────────────────────────────────────────── */
 const C = {
-  bg: "#0c0c0c",
-  card: "#141414",
-  cardUp: "#1a1a1a",
-  lime: "#CCFF00",
-  limeDim: "rgba(204,255,0,0.13)",
-  limeGlow: "rgba(204,255,0,0.38)",
-  slate: "#5c6370",
-  slateL: "#8a9099",
-  white: "#ececec",
-  red: "#e83e3e",
-  blue: "#5ba3d9",
-  ice: "#7ecfe3",
-  gold: "#f0c040",
+  bg: "#000000", // Pure black (from brand images)
+  card: "#0d0d0d", // Slightly lifted black for cards
+  cardUp: "#1a1a1a", // Elevated cards
+  primary: "#b366cc", // Brand magenta-purple (main accent)
+  primaryDim: "rgba(179,102,204,0.13)",
+  primaryGlow: "rgba(179,102,204,0.45)",
+  yellow: "#e6ff00", // Highlight yellow (used in "STUDENT OFFER" etc)
+  yellowDim: "rgba(230,255,0,0.12)",
+  slate: "#5c6370", // Muted text
+  slateL: "#9ca3af", // Light muted text
+  white: "#f0f0f0", // Off-white for readability
+  red: "#e83e3e", // Vibe tile: STRENGTH
+  blue: "#5ba3d9", // Vibe tile: ZEN
+  orange: "#ff8c42", // Vibe tile: SWEAT
+  ice: "#7ecfe3", // Vibe tile: RECOVERY
+  gold: "#f0c040", // Reserved for premium tier (if needed)
 };
 
 /* ───────────────────────────────────────────
@@ -157,8 +160,8 @@ const Ticker = () => (
               width: 6,
               height: 6,
               borderRadius: "50%",
-              background: C.lime,
-              boxShadow: `0 0 7px ${C.lime}`,
+              background: C.primary,
+              boxShadow: `0 0 7px ${C.primary}`,
             }}
           />
           <span
@@ -183,7 +186,7 @@ const Ticker = () => (
    NAV
 ─────────────────────────────────────────── */
 const navLinks = ["HOME", "EXPLORE", "COACHES", "JOIN", "CONTACT"];
-const Nav = ({ openJoin }) => {
+const Nav = ({ openJoin }: { openJoin: () => void }) => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { w } = useWindowSize();
@@ -235,12 +238,12 @@ const Nav = ({ openJoin }) => {
               fontFamily: "'Inter Tight',sans-serif",
               fontSize: isMobile ? 20 : 24,
               fontWeight: 900,
-              color: C.lime,
+              color: C.primary,
               letterSpacing: "-.01em",
-              textShadow: `0 0 18px ${C.limeGlow}`,
+              textShadow: `0 0 18px ${C.primaryGlow}`,
             }}
           >
-            WW
+            WORKOUT
           </span>
           <span
             style={{
@@ -251,7 +254,7 @@ const Nav = ({ openJoin }) => {
               letterSpacing: ".16em",
             }}
           >
-            SQUAD
+            WAREHOUSE
           </span>
         </div>
 
@@ -264,13 +267,16 @@ const Nav = ({ openJoin }) => {
                 onClick={() => {
                   if (l === "JOIN") openJoin();
                   else {
-                    const map = {
+                    const map: Record<string, number | undefined> = {
                       HOME: 0,
                       EXPLORE: document.getElementById("explore")?.offsetTop,
                       COACHES: document.getElementById("coaches")?.offsetTop,
                       CONTACT: document.getElementById("contact")?.offsetTop,
                     };
-                    window.scrollTo({ top: map[l] || 0, behavior: "smooth" });
+                    window.scrollTo({
+                      top: (map[l] as number) || 0,
+                      behavior: "smooth",
+                    });
                   }
                 }}
                 style={{
@@ -280,7 +286,7 @@ const Nav = ({ openJoin }) => {
                   fontSize: 11,
                   fontWeight: 600,
                   letterSpacing: ".18em",
-                  color: l === "JOIN" ? C.lime : C.slateL,
+                  color: l === "JOIN" ? C.primary : C.slateL,
                   cursor: "pointer",
                   padding: "6px 0",
                   position: "relative",
@@ -299,7 +305,7 @@ const Nav = ({ openJoin }) => {
                     style={{
                       position: "absolute",
                       inset: "-6px -14px",
-                      border: `1px solid ${C.lime}`,
+                      border: `1px solid ${C.primary}`,
                       borderRadius: 50,
                       opacity: 0.5,
                     }}
@@ -329,7 +335,7 @@ const Nav = ({ openJoin }) => {
                 display: "block",
                 width: 24,
                 height: 2,
-                background: menuOpen ? C.lime : C.white,
+                background: menuOpen ? C.primary : C.white,
                 borderRadius: 2,
                 transition: "all .3s ease",
                 transform: menuOpen
@@ -342,7 +348,7 @@ const Nav = ({ openJoin }) => {
                 display: "block",
                 width: 24,
                 height: 2,
-                background: menuOpen ? C.lime : C.white,
+                background: menuOpen ? C.primary : C.white,
                 borderRadius: 2,
                 transition: "opacity .3s",
                 opacity: menuOpen ? 0 : 1,
@@ -353,7 +359,7 @@ const Nav = ({ openJoin }) => {
                 display: "block",
                 width: 24,
                 height: 2,
-                background: menuOpen ? C.lime : C.white,
+                background: menuOpen ? C.primary : C.white,
                 borderRadius: 2,
                 transition: "all .3s ease",
                 transform: menuOpen
@@ -389,12 +395,16 @@ const Nav = ({ openJoin }) => {
                 setMenuOpen(false);
                 if (l === "JOIN") openJoin();
                 else {
-                  const map = {
+                  const map: Record<string, number | undefined> = {
                     EXPLORE: document.getElementById("explore")?.offsetTop,
                     COACHES: document.getElementById("coaches")?.offsetTop,
                     CONTACT: document.getElementById("contact")?.offsetTop,
                   };
-                  window.scrollTo({ top: map[l] || 0, behavior: "smooth" });
+                  const scrollTop = l in map ? (map[l] as number) : 0;
+                  window.scrollTo({
+                    top: scrollTop || 0,
+                    behavior: "smooth",
+                  });
                 }
               }}
               style={{
@@ -403,7 +413,7 @@ const Nav = ({ openJoin }) => {
                 fontFamily: "'Inter Tight',sans-serif",
                 fontSize: 28,
                 fontWeight: 800,
-                color: l === "JOIN" ? C.lime : C.white,
+                color: l === "JOIN" ? C.primary : C.white,
                 letterSpacing: ".14em",
                 cursor: "pointer",
                 opacity: 0,
@@ -422,7 +432,7 @@ const Nav = ({ openJoin }) => {
 /* ───────────────────────────────────────────
    HERO
 ─────────────────────────────────────────── */
-const Hero = ({ openJoin }) => {
+const Hero = ({ openJoin }: { openJoin: () => void }) => {
   const { w } = useWindowSize();
   const isMobile = w < 768;
   const [py, setPy] = useState(0);
@@ -574,7 +584,7 @@ const Hero = ({ openJoin }) => {
             fontFamily: "'Inter Tight',sans-serif",
             fontSize: isMobile ? 11 : 12,
             fontWeight: 600,
-            color: C.lime,
+            color: C.primary,
             letterSpacing: ".24em",
             marginBottom: 14,
             display: "flex",
@@ -587,8 +597,8 @@ const Hero = ({ openJoin }) => {
               width: 8,
               height: 8,
               borderRadius: "50%",
-              background: C.lime,
-              boxShadow: `0 0 8px ${C.lime}`,
+              background: C.primary,
+              boxShadow: `0 0 8px ${C.primary}`,
               animation: "ww-pulse 2s ease infinite",
             }}
           />
@@ -606,14 +616,14 @@ const Hero = ({ openJoin }) => {
         >
           <span
             style={{
-              color: C.lime,
+              color: C.primary,
               display: "block",
-              textShadow: `0 0 60px ${C.limeGlow}`,
+              textShadow: `0 0 60px ${C.primaryGlow}`,
             }}
           >
-            WW
+            WORKOUT
           </span>
-          <span style={{ display: "block" }}>SQUAD</span>
+          <span style={{ display: "block" }}>WAREHOUSE</span>
         </h1>
         <p
           style={{
@@ -644,21 +654,21 @@ const Hero = ({ openJoin }) => {
               fontWeight: 800,
               letterSpacing: ".18em",
               color: C.bg,
-              background: C.lime,
+              background: C.primary,
               border: "none",
               borderRadius: 50,
               padding: isMobile ? "14px 32px" : "16px 40px",
               cursor: "pointer",
-              boxShadow: `0 6px 36px ${C.limeGlow}`,
+              boxShadow: `0 6px 36px ${C.primaryGlow}`,
               transition: "transform .15s,box-shadow .15s",
             }}
             onMouseDown={(e) => {
               e.currentTarget.style.transform = "scale(.96)";
-              e.currentTarget.style.boxShadow = `0 2px 18px ${C.limeGlow}`;
+              e.currentTarget.style.boxShadow = `0 2px 18px ${C.primaryGlow}`;
             }}
             onMouseUp={(e) => {
               e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.boxShadow = `0 6px 36px ${C.limeGlow}`;
+              e.currentTarget.style.boxShadow = `0 6px 36px ${C.primaryGlow}`;
             }}
           >
             JOIN THE SQUAD
@@ -725,7 +735,7 @@ const Hero = ({ openJoin }) => {
           style={{
             width: 1,
             height: 34,
-            background: `linear-gradient(to bottom,${C.lime},transparent)`,
+            background: `linear-gradient(to bottom,${C.primary},transparent)`,
             animation: "ww-heartbeat 2s ease infinite",
           }}
         />
@@ -772,7 +782,13 @@ const vibes = [
   },
 ];
 
-const VibeGrid = ({ accent, setAccent }) => {
+const VibeGrid = ({
+  accent,
+  setAccent,
+}: {
+  accent: string;
+  setAccent: (color: string) => void;
+}) => {
   const { w } = useWindowSize();
   const isMobile = w < 768;
   return (
@@ -790,7 +806,7 @@ const VibeGrid = ({ accent, setAccent }) => {
               fontFamily: "'Inter Tight',sans-serif",
               fontSize: 11,
               fontWeight: 600,
-              color: C.lime,
+              color: C.primary,
               letterSpacing: ".22em",
             }}
           >
@@ -828,7 +844,7 @@ const VibeGrid = ({ accent, setAccent }) => {
                 style={{ animationDelay: `${i * 0.08}s` }}
               >
                 <button
-                  onClick={() => setAccent(active ? C.lime : v.color)}
+                  onClick={() => setAccent(active ? C.primary : v.color)}
                   style={{
                     width: "100%",
                     textAlign: "left",
@@ -903,7 +919,7 @@ const VibeGrid = ({ accent, setAccent }) => {
 };
 
 /* ───────────────────────────────────────────
-   WHY WW SQUAD (editorial asymmetric)
+   WHY WORKOUT WAREHOUSE (editorial asymmetric)
 ─────────────────────────────────────────── */
 const stats = [
   { num: "412", label: "Training Right Now" },
@@ -912,7 +928,7 @@ const stats = [
   { num: "12+", label: "Live Classes Daily" },
 ];
 
-const WhySection = ({ accent }) => {
+const WhySection = ({ accent }: { accent: string }) => {
   const { w } = useWindowSize();
   const isMobile = w < 768;
   const isTablet = w < 1024;
@@ -961,7 +977,7 @@ const WhySection = ({ accent }) => {
               letterSpacing: ".22em",
             }}
           >
-            WHY WW SQUAD
+            WHY WORKOUT WAREHOUSE
           </span>
           <h2
             style={{
@@ -987,9 +1003,10 @@ const WhySection = ({ accent }) => {
               maxWidth: 480,
             }}
           >
-            WW SQUAD fuses the luxury of Equinox, the raw energy of Gymbox, the
-            speed of PureGym, and the tech-driven community of Peloton — into
-            one obsessive, members-first experience built for 2026.
+            WORKOUT WAREHOUSE fuses the luxury of Equinox, the raw energy of
+            Gymbox, the speed of PureGym, and the tech-driven community of
+            Peloton — into one obsessive, members-first experience built for
+            2026.
           </p>
           <p
             style={{
@@ -1078,7 +1095,7 @@ const coaches = [
   {
     name: "SARAH K.",
     role: "HIIT & Conditioning",
-    base: "Soho",
+    base: "Highway Mall",
     img: "🏋️",
     classes: 847,
     rating: 4.9,
@@ -1086,7 +1103,7 @@ const coaches = [
   {
     name: "ALEX M.",
     role: "Strength & Power",
-    base: "Shoreditch",
+    base: "Highway Mall",
     img: "💪",
     classes: 612,
     rating: 4.8,
@@ -1094,7 +1111,7 @@ const coaches = [
   {
     name: "LUNA R.",
     role: "Zen & Flow",
-    base: "Notting Hill",
+    base: "Highway Mall",
     img: "🧘",
     classes: 1204,
     rating: 5.0,
@@ -1102,7 +1119,7 @@ const coaches = [
   {
     name: "JAKE T.",
     role: "Cardio & Endurance",
-    base: "Camden",
+    base: "Highway Mall",
     img: "🏃",
     classes: 538,
     rating: 4.7,
@@ -1110,14 +1127,14 @@ const coaches = [
   {
     name: "MIA S.",
     role: "Recovery & Mobility",
-    base: "Greenwich",
+    base: "Highway Mall",
     img: "❄️",
     classes: 423,
     rating: 4.9,
   },
 ];
 
-const CoachCard = ({ coach, accent }) => {
+const CoachCard = ({ coach, accent }: { coach: any; accent: string }) => {
   const { w } = useWindowSize();
   const isMobile = w < 768;
   return (
@@ -1225,13 +1242,13 @@ const CoachCard = ({ coach, accent }) => {
   );
 };
 
-const CoachesSection = ({ accent }) => {
+const CoachesSection = ({ accent }: { accent: string }) => {
   const { w } = useWindowSize();
   const isMobile = w < 768;
   const isTablet = w < 1024;
-  const scrollRef = useRef(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  const scroll = (dir) => {
+  const scroll = (dir: number) => {
     if (scrollRef.current)
       scrollRef.current.scrollBy({ left: dir * 300, behavior: "smooth" });
   };
@@ -1375,28 +1392,28 @@ const CoachesSection = ({ accent }) => {
 const testimonials = [
   {
     name: "JAMIE L.",
-    base: "Soho Member · 8 months",
+    base: "Member · 8 months",
     quote:
-      "I've tried every gym in London. WW Squad is the first place that actually feels like a community. The energy is unreal.",
+      "I've tried every gym in Nairobi. Workout Warehouse is the first place that actually feels like a community. The energy is unreal.",
     stars: 5,
   },
   {
     name: "PRIYA S.",
-    base: "Shoreditch Member · 1 year",
+    base: "Member · 1 year",
     quote:
       "The coaches here are world-class. Sarah's HIIT sessions are legendary — I've never pushed harder or felt better.",
     stars: 5,
   },
   {
     name: "MARCUS D.",
-    base: "Camden Member · 6 months",
+    base: "Member · 6 months",
     quote:
       "From the app to the recovery suite, every detail is obsessively designed. This isn't a gym. It's an experience.",
     stars: 5,
   },
 ];
 
-const Testimonials = ({ accent }) => {
+const Testimonials = ({ accent }: { accent: string }) => {
   const [idx, setIdx] = useState(0);
   const { w } = useWindowSize();
   const isMobile = w < 768;
@@ -1577,7 +1594,876 @@ const Testimonials = ({ accent }) => {
 /* ───────────────────────────────────────────
    CONTACT / CTA BAND
 ─────────────────────────────────────────── */
-const CtaBand = ({ openJoin, accent }) => {
+/* ───────────────────────────────────────────
+   PRICING & SCHEDULE SECTION (3 tabs)
+─────────────────────────────────────────── */
+
+// Standard membership packages (from gym_rates.jpeg)
+const standardRates = [
+  { name: "Day Pass", price: "1,000", validity: "Same day" },
+  { name: "Weekly", price: "2,500", validity: "7 days" },
+  { name: "Monthly", price: "6,000", validity: "30 days" },
+  {
+    name: "3 Months",
+    price: "17,000",
+    validity: "90 days",
+    badge: "BEST VALUE",
+  },
+  { name: "6 Months", price: "32,000", validity: "180 days" },
+  { name: "Annual", price: "59,000", validity: "365 days" },
+  { name: "Annual (Couples)", price: "105,000", validity: "365 days" },
+];
+
+// Student packages (from student_rates.jpeg)
+const studentRates = [
+  {
+    name: "Peak (All Hours)",
+    monthly: "5,000",
+    firstMonth: "2,500",
+    note: "Valid student ID required",
+  },
+  {
+    name: "Peak Direct Debit",
+    monthly: "4,500",
+    firstMonth: null,
+    note: "Min. 12 months commitment",
+  },
+  {
+    name: "Off-Peak (8am–4:30pm)",
+    monthly: "3,000",
+    firstMonth: "1,500",
+    note: "Weekdays only",
+  },
+];
+
+// Cold plunge rates (from cold_plunge_rates.jpeg)
+const coldPlungeRates = [
+  { sessions: "Single Session", member: "1,500", nonMember: "2,000" },
+  { sessions: "4-Session Pass", member: "5,500", nonMember: "6,500" },
+  { sessions: "8-Session Pass", member: "10,000", nonMember: "12,000" },
+  { sessions: "12-Session Pass", member: "13,500", nonMember: "16,000" },
+];
+
+// Class schedule (from class_schedules.jpeg)
+const classSchedule = [
+  {
+    time: "5:45 AM – 6:30 AM",
+    mon: { name: "BODYSCULPT", coach: "IGGY" },
+    tue: { name: "KICKBOXING", coach: "EVANS" },
+    wed: { name: "BOXING", coach: "HASSAN" },
+    fri: { name: "INSANITY", coach: "HASSAN" },
+  },
+  {
+    time: "5:50 AM – 6:35 AM",
+    tue: { name: "SPIN", coach: "LINNET" },
+    thu: { name: "TAEBO-CHOMA & TONING", coach: "ALVIN" },
+  },
+  {
+    time: "6:40 AM – 7:25 AM",
+    mon: { name: "BODYSCULPT", coach: "IGGY" },
+    tue: { name: "KATA BOX", coach: "KEITH" },
+    wed: { name: "DANCE FITNESS", coach: "BRACHO" },
+    fri: { name: "BOXING", coach: "HASSAN" },
+  },
+  { time: "6:45 AM – 7:30 AM", tue: { name: "SPIN", coach: "LINNET" } },
+  { time: "9:00 AM – 9:45 AM", sat: { name: "SPIN", coach: "VIN" } },
+  { time: "10:00 AM – 10:45 AM", sat: { name: "SPIN", coach: "VIN" } },
+  {
+    time: "5:30 PM – 6:15 PM",
+    mon: { name: "AEROBICS", coach: "DENNO" },
+    tue: { name: "CIRCUITS", coach: "FRANK" },
+    wed: { name: "MOBILITY", coach: "EVANS" },
+    thu: { name: "WEIGHT PARTY", coach: "LINNET" },
+  },
+  {
+    time: "5:50 PM – 6:35 PM",
+    mon: { name: "SPIN", coach: "LINNET" },
+    thu: { name: "SPIN", coach: "VIN" },
+    fri: { name: "DANCE FITNESS", coach: "BRACHO" },
+  },
+  {
+    time: "6:25 PM – 7:10 PM",
+    mon: { name: "HIIT", coach: "DENNO" },
+    tue: { name: "DANCE FITNESS", coach: "BRACHO" },
+    wed: { name: "STEPS/TABATA", coach: "KEITH" },
+    thu: { name: "WEIGHT PARTY", coach: "LINNET" },
+  },
+  { time: "6:45 PM – 7:30 PM", mon: { name: "SPIN", coach: "LINNET" } },
+];
+
+const PricingScheduleSection = ({ accent }: { accent: string }) => {
+  const [activeTab, setActiveTab] = useState("standard"); // "standard" | "student" | "classes"
+  const { w } = useWindowSize();
+  const isMobile = w < 768;
+
+  return (
+    <section
+      id="pricing"
+      style={{
+        padding: isMobile ? "72px 20px" : "100px 64px",
+        background: C.bg,
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      {/* Diagonal accent glow */}
+      <div
+        style={{
+          position: "absolute",
+          top: "20%",
+          left: "-10%",
+          width: "50%",
+          height: "60%",
+          background: `radial-gradient(ellipse,${accent}06 0%,transparent 70%)`,
+          pointerEvents: "none",
+          filter: "blur(80px)",
+        }}
+      />
+
+      <div style={{ maxWidth: 1140, margin: "0 auto" }}>
+        <div
+          className="ww-reveal"
+          style={{ textAlign: "center", marginBottom: isMobile ? 36 : 48 }}
+        >
+          <span
+            style={{
+              fontFamily: "'Inter Tight',sans-serif",
+              fontSize: 11,
+              fontWeight: 600,
+              color: accent,
+              letterSpacing: ".22em",
+            }}
+          >
+            PRICING & SCHEDULE
+          </span>
+          <h2
+            style={{
+              fontFamily: "'Inter Tight',sans-serif",
+              fontSize: isMobile ? 36 : 52,
+              fontWeight: 900,
+              color: C.white,
+              marginTop: 10,
+              lineHeight: 1.05,
+            }}
+          >
+            Transparent.
+            <br />
+            <span style={{ color: accent }}>No surprises.</span>
+          </h2>
+        </div>
+
+        {/* Tab Navigation */}
+        <div
+          className="ww-reveal"
+          style={{
+            display: "flex",
+            gap: isMobile ? 8 : 12,
+            justifyContent: "center",
+            marginBottom: 40,
+            flexWrap: "wrap",
+          }}
+        >
+          {[
+            { id: "standard", label: "STANDARD RATES" },
+            { id: "student", label: "STUDENT RATES" },
+            { id: "classes", label: "CLASS SCHEDULE" },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              style={{
+                padding: isMobile ? "12px 20px" : "14px 28px",
+                background: activeTab === tab.id ? accent : "transparent",
+                border: `1.5px solid ${activeTab === tab.id ? accent : "rgba(255,255,255,.1)"}`,
+                borderRadius: 50,
+                cursor: "pointer",
+                fontFamily: "'Inter Tight',sans-serif",
+                fontSize: isMobile ? 10 : 11,
+                fontWeight: 800,
+                color: activeTab === tab.id ? C.bg : C.slateL,
+                letterSpacing: ".16em",
+                transition: "all .3s",
+                boxShadow:
+                  activeTab === tab.id ? `0 0 20px ${accent}40` : "none",
+              }}
+              onMouseEnter={(e) => {
+                if (activeTab !== tab.id) {
+                  e.currentTarget.style.borderColor = `${accent}60`;
+                  e.currentTarget.style.color = C.white;
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (activeTab !== tab.id) {
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,.1)";
+                  e.currentTarget.style.color = C.slateL;
+                }
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* ── TAB CONTENT: STANDARD RATES ── */}
+        {activeTab === "standard" && (
+          <div style={{ animation: "ww-fadeUp .4s ease" }}>
+            {/* Main packages */}
+            <div
+              style={{
+                background: C.card,
+                borderRadius: 22,
+                overflow: "hidden",
+                border: "1px solid rgba(255,255,255,.06)",
+                marginBottom: 32,
+              }}
+            >
+              <div
+                style={{
+                  padding: isMobile ? "16px 18px" : "18px 24px",
+                  background: `${accent}08`,
+                  borderBottom: "1px solid rgba(255,255,255,.06)",
+                }}
+              >
+                <h3
+                  style={{
+                    fontFamily: "'Inter Tight',sans-serif",
+                    fontSize: isMobile ? 14 : 16,
+                    fontWeight: 800,
+                    color: C.white,
+                    letterSpacing: ".1em",
+                  }}
+                >
+                  GYM MEMBERSHIPS
+                </h3>
+              </div>
+              <div style={{ padding: isMobile ? "0" : "8px 0" }}>
+                {standardRates.map((rate, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: isMobile ? "16px 18px" : "18px 24px",
+                      borderBottom:
+                        i < standardRates.length - 1
+                          ? "1px solid rgba(255,255,255,.04)"
+                          : "none",
+                      position: "relative",
+                    }}
+                  >
+                    {rate.badge && (
+                      <span
+                        style={{
+                          position: "absolute",
+                          top: isMobile ? 8 : 10,
+                          right: isMobile ? 18 : 24,
+                          fontFamily: "'Inter Tight',sans-serif",
+                          fontSize: 8,
+                          fontWeight: 800,
+                          color: C.bg,
+                          background: accent,
+                          padding: "3px 10px",
+                          borderRadius: 50,
+                          letterSpacing: ".12em",
+                        }}
+                      >
+                        {rate.badge}
+                      </span>
+                    )}
+                    <div>
+                      <div
+                        style={{
+                          fontFamily: "'Inter Tight',sans-serif",
+                          fontSize: isMobile ? 14 : 16,
+                          fontWeight: 700,
+                          color: C.white,
+                        }}
+                      >
+                        {rate.name}
+                      </div>
+                      <div
+                        style={{
+                          fontFamily: "'Tenor Sans',serif",
+                          fontSize: isMobile ? 11 : 12,
+                          color: C.slate,
+                          marginTop: 3,
+                        }}
+                      >
+                        Valid for {rate.validity}
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        fontFamily: "'Inter Tight',sans-serif",
+                        fontSize: isMobile ? 18 : 22,
+                        fontWeight: 900,
+                        color: accent,
+                      }}
+                    >
+                      KSh {rate.price}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Cold Plunge */}
+            <div
+              className="ww-reveal"
+              style={{
+                background: C.card,
+                borderRadius: 22,
+                overflow: "hidden",
+                border: "1px solid rgba(255,255,255,.06)",
+                animationDelay: ".1s",
+              }}
+            >
+              <div
+                style={{
+                  padding: isMobile ? "16px 18px" : "18px 24px",
+                  background: `${C.ice}08`,
+                  borderBottom: "1px solid rgba(255,255,255,.06)",
+                }}
+              >
+                <h3
+                  style={{
+                    fontFamily: "'Inter Tight',sans-serif",
+                    fontSize: isMobile ? 14 : 16,
+                    fontWeight: 800,
+                    color: C.white,
+                    letterSpacing: ".1em",
+                  }}
+                >
+                  COLD PLUNGE SESSIONS
+                </h3>
+              </div>
+              <div
+                style={{
+                  overflowX: isMobile ? "auto" : "visible",
+                  padding: isMobile ? "0" : "8px 0",
+                }}
+              >
+                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                  <thead>
+                    <tr
+                      style={{
+                        borderBottom: "1px solid rgba(255,255,255,.06)",
+                      }}
+                    >
+                      <th
+                        style={{
+                          fontFamily: "'Inter Tight',sans-serif",
+                          fontSize: isMobile ? 10 : 11,
+                          fontWeight: 700,
+                          color: C.slateL,
+                          letterSpacing: ".12em",
+                          textAlign: "left",
+                          padding: isMobile ? "12px 18px" : "14px 24px",
+                        }}
+                      >
+                        PACKAGE
+                      </th>
+                      <th
+                        style={{
+                          fontFamily: "'Inter Tight',sans-serif",
+                          fontSize: isMobile ? 10 : 11,
+                          fontWeight: 700,
+                          color: C.slateL,
+                          letterSpacing: ".12em",
+                          textAlign: "right",
+                          padding: isMobile ? "12px 18px" : "14px 24px",
+                        }}
+                      >
+                        MEMBER
+                      </th>
+                      <th
+                        style={{
+                          fontFamily: "'Inter Tight',sans-serif",
+                          fontSize: isMobile ? 10 : 11,
+                          fontWeight: 700,
+                          color: C.slateL,
+                          letterSpacing: ".12em",
+                          textAlign: "right",
+                          padding: isMobile ? "12px 18px" : "14px 24px",
+                        }}
+                      >
+                        NON-MEMBER
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {coldPlungeRates.map((cp, i) => (
+                      <tr
+                        key={i}
+                        style={{
+                          borderBottom:
+                            i < coldPlungeRates.length - 1
+                              ? "1px solid rgba(255,255,255,.04)"
+                              : "none",
+                        }}
+                      >
+                        <td
+                          style={{
+                            fontFamily: "'Tenor Sans',serif",
+                            fontSize: isMobile ? 12 : 13,
+                            color: C.white,
+                            padding: isMobile ? "14px 18px" : "16px 24px",
+                          }}
+                        >
+                          {cp.sessions}
+                        </td>
+                        <td
+                          style={{
+                            fontFamily: "'Inter Tight',sans-serif",
+                            fontSize: isMobile ? 13 : 14,
+                            fontWeight: 700,
+                            color: accent,
+                            textAlign: "right",
+                            padding: isMobile ? "14px 18px" : "16px 24px",
+                          }}
+                        >
+                          KSh {cp.member}
+                        </td>
+                        <td
+                          style={{
+                            fontFamily: "'Inter Tight',sans-serif",
+                            fontSize: isMobile ? 13 : 14,
+                            fontWeight: 700,
+                            color: C.slateL,
+                            textAlign: "right",
+                            padding: isMobile ? "14px 18px" : "16px 24px",
+                          }}
+                        >
+                          KSh {cp.nonMember}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Additional services note */}
+            <div
+              style={{
+                marginTop: 24,
+                textAlign: "center",
+                fontFamily: "'Tenor Sans',serif",
+                fontSize: isMobile ? 12 : 13,
+                color: C.slate,
+                lineHeight: 1.6,
+              }}
+            >
+              Physiotherapy: KSh 3,500 per session · BMI Analysis: KSh 500 per
+              session
+            </div>
+          </div>
+        )}
+
+        {/* ── TAB CONTENT: STUDENT RATES ── */}
+        {activeTab === "student" && (
+          <div style={{ animation: "ww-fadeUp .4s ease" }}>
+            {/* Student badge */}
+            <div style={{ textAlign: "center", marginBottom: 32 }}>
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 10,
+                  background: `${C.yellow}12`,
+                  border: `1px solid ${C.yellow}40`,
+                  borderRadius: 50,
+                  padding: "10px 24px",
+                }}
+              >
+                <span style={{ fontSize: 18 }}>🎓</span>
+                <span
+                  style={{
+                    fontFamily: "'Inter Tight',sans-serif",
+                    fontSize: 12,
+                    fontWeight: 800,
+                    color: C.yellow,
+                    letterSpacing: ".14em",
+                  }}
+                >
+                  VALID STUDENT ID REQUIRED
+                </span>
+              </div>
+            </div>
+
+            <div
+              style={{
+                background: C.card,
+                borderRadius: 22,
+                overflow: "hidden",
+                border: "1px solid rgba(255,255,255,.06)",
+              }}
+            >
+              <div
+                style={{
+                  padding: isMobile ? "16px 18px" : "18px 24px",
+                  background: `${C.yellow}08`,
+                  borderBottom: "1px solid rgba(255,255,255,.06)",
+                }}
+              >
+                <h3
+                  style={{
+                    fontFamily: "'Inter Tight',sans-serif",
+                    fontSize: isMobile ? 14 : 16,
+                    fontWeight: 800,
+                    color: C.white,
+                    letterSpacing: ".1em",
+                  }}
+                >
+                  STUDENT MEMBERSHIPS
+                </h3>
+              </div>
+              <div style={{ padding: isMobile ? "0" : "8px 0" }}>
+                {studentRates.map((rate, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      padding: isMobile ? "18px 18px" : "20px 24px",
+                      borderBottom:
+                        i < studentRates.length - 1
+                          ? "1px solid rgba(255,255,255,.04)"
+                          : "none",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "flex-start",
+                        marginBottom: 10,
+                      }}
+                    >
+                      <div style={{ flex: 1 }}>
+                        <div
+                          style={{
+                            fontFamily: "'Inter Tight',sans-serif",
+                            fontSize: isMobile ? 15 : 17,
+                            fontWeight: 700,
+                            color: C.white,
+                          }}
+                        >
+                          {rate.name}
+                        </div>
+                        <div
+                          style={{
+                            fontFamily: "'Tenor Sans',serif",
+                            fontSize: isMobile ? 11 : 12,
+                            color: C.slate,
+                            marginTop: 4,
+                          }}
+                        >
+                          {rate.note}
+                        </div>
+                      </div>
+                      <div style={{ textAlign: "right" }}>
+                        <div
+                          style={{
+                            fontFamily: "'Inter Tight',sans-serif",
+                            fontSize: isMobile ? 18 : 22,
+                            fontWeight: 900,
+                            color: C.yellow,
+                          }}
+                        >
+                          KSh {rate.monthly}
+                        </div>
+                        <div
+                          style={{
+                            fontFamily: "'Tenor Sans',serif",
+                            fontSize: 10,
+                            color: C.slateL,
+                            marginTop: 2,
+                          }}
+                        >
+                          /month
+                        </div>
+                      </div>
+                    </div>
+                    {rate.firstMonth && (
+                      <div
+                        style={{
+                          display: "inline-block",
+                          background: `${C.yellow}15`,
+                          border: `1px solid ${C.yellow}30`,
+                          borderRadius: 8,
+                          padding: "6px 12px",
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontFamily: "'Inter Tight',sans-serif",
+                            fontSize: 10,
+                            fontWeight: 700,
+                            color: C.yellow,
+                            letterSpacing: ".1em",
+                          }}
+                        >
+                          FIRST MONTH: KSh {rate.firstMonth}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div
+              style={{
+                marginTop: 24,
+                textAlign: "center",
+                fontFamily: "'Tenor Sans',serif",
+                fontSize: isMobile ? 12 : 13,
+                color: C.slate,
+                lineHeight: 1.6,
+              }}
+            >
+              World-class gym · Brand new equipment · 5 classes per day
+            </div>
+          </div>
+        )}
+
+        {/* ── TAB CONTENT: CLASS SCHEDULE ── */}
+        {activeTab === "classes" && (
+          <div style={{ animation: "ww-fadeUp .4s ease" }}>
+            <div
+              style={{
+                background: C.card,
+                borderRadius: 22,
+                overflow: "hidden",
+                border: "1px solid rgba(255,255,255,.06)",
+              }}
+            >
+              <div
+                style={{
+                  padding: isMobile ? "16px 18px" : "18px 24px",
+                  background: `${accent}08`,
+                  borderBottom: "1px solid rgba(255,255,255,.06)",
+                }}
+              >
+                <h3
+                  style={{
+                    fontFamily: "'Inter Tight',sans-serif",
+                    fontSize: isMobile ? 14 : 16,
+                    fontWeight: 800,
+                    color: C.white,
+                    letterSpacing: ".1em",
+                  }}
+                >
+                  GROUP FITNESS CLASSES
+                </h3>
+                <p
+                  style={{
+                    fontFamily: "'Tenor Sans',serif",
+                    fontSize: 12,
+                    color: C.slate,
+                    marginTop: 6,
+                  }}
+                >
+                  All classes included with membership · First-come,
+                  first-served
+                </p>
+              </div>
+
+              {/* Desktop table */}
+              {!isMobile && (
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                    <thead>
+                      <tr
+                        style={{
+                          background: C.cardUp,
+                          borderBottom: "1px solid rgba(255,255,255,.06)",
+                        }}
+                      >
+                        <th
+                          style={{
+                            fontFamily: "'Inter Tight',sans-serif",
+                            fontSize: 10,
+                            fontWeight: 700,
+                            color: C.slateL,
+                            letterSpacing: ".12em",
+                            textAlign: "left",
+                            padding: "14px 20px",
+                            minWidth: 140,
+                          }}
+                        >
+                          TIME
+                        </th>
+                        {[
+                          "MONDAY",
+                          "TUESDAY",
+                          "WEDNESDAY",
+                          "THURSDAY",
+                          "FRIDAY",
+                          "SATURDAY",
+                        ].map((day) => (
+                          <th
+                            key={day}
+                            style={{
+                              fontFamily: "'Inter Tight',sans-serif",
+                              fontSize: 10,
+                              fontWeight: 700,
+                              color: accent,
+                              letterSpacing: ".12em",
+                              textAlign: "left",
+                              padding: "14px 16px",
+                              minWidth: 140,
+                            }}
+                          >
+                            {day}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {classSchedule.map((row, i) => (
+                        <tr
+                          key={i}
+                          style={{
+                            borderBottom: "1px solid rgba(255,255,255,.03)",
+                          }}
+                        >
+                          <td
+                            style={{
+                              fontFamily: "'Inter Tight',sans-serif",
+                              fontSize: 11,
+                              fontWeight: 600,
+                              color: C.slateL,
+                              padding: "14px 20px",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {row.time}
+                          </td>
+                          {["mon", "tue", "wed", "thu", "fri", "sat"].map(
+                            (day) => (
+                              <td key={day} style={{ padding: "14px 16px" }}>
+                                {(row as any)[day] ? (
+                                  <div>
+                                    <div
+                                      style={{
+                                        fontFamily: "'Inter Tight',sans-serif",
+                                        fontSize: 12,
+                                        fontWeight: 700,
+                                        color: C.white,
+                                        marginBottom: 3,
+                                      }}
+                                    >
+                                      {(row as any)[day].name}
+                                    </div>
+                                    <div
+                                      style={{
+                                        fontFamily: "'Tenor Sans',serif",
+                                        fontSize: 10,
+                                        color: accent,
+                                      }}
+                                    >
+                                      {(row as any)[day].coach}
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div style={{ height: 36 }} />
+                                )}
+                              </td>
+                            ),
+                          )}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {/* Mobile list */}
+              {isMobile && (
+                <div style={{ padding: "8px 0" }}>
+                  {classSchedule.map((row, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        padding: "16px 18px",
+                        borderBottom:
+                          i < classSchedule.length - 1
+                            ? "1px solid rgba(255,255,255,.04)"
+                            : "none",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontFamily: "'Inter Tight',sans-serif",
+                          fontSize: 10,
+                          fontWeight: 700,
+                          color: accent,
+                          letterSpacing: ".1em",
+                          marginBottom: 10,
+                        }}
+                      >
+                        {row.time}
+                      </div>
+                      {["mon", "tue", "wed", "thu", "fri", "sat"].map(
+                        (day) =>
+                          (row as any)[day] && (
+                            <div key={day} style={{ marginBottom: 8 }}>
+                              <div
+                                style={{
+                                  fontFamily: "'Inter Tight',sans-serif",
+                                  fontSize: 11,
+                                  fontWeight: 700,
+                                  color: C.white,
+                                }}
+                              >
+                                {(row as any)[day].name}
+                              </div>
+                              <div
+                                style={{
+                                  fontFamily: "'Tenor Sans',serif",
+                                  fontSize: 10,
+                                  color: C.slate,
+                                }}
+                              >
+                                {(row as any)[day].coach} ·{" "}
+                                {day.toUpperCase().slice(0, 3)}
+                              </div>
+                            </div>
+                          ),
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div
+              style={{
+                marginTop: 24,
+                textAlign: "center",
+                fontFamily: "'Tenor Sans',serif",
+                fontSize: isMobile ? 12 : 13,
+                color: C.slate,
+                lineHeight: 1.6,
+              }}
+            >
+              Classes subject to availability · Check in-app for real-time
+              updates
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+};
+const CtaBand = ({
+  openJoin,
+  accent,
+}: {
+  openJoin: () => void;
+  accent: string;
+}) => {
   const { w } = useWindowSize();
   const isMobile = w < 768;
   return (
@@ -1682,10 +2568,19 @@ const Footer = () => {
   const { w } = useWindowSize();
   const isMobile = w < 768;
   const cols = [
-    { title: "WW SQUAD", items: ["About Us", "Careers", "Press", "Blog"] },
     {
-      title: "VISIT",
-      items: ["Soho", "Shoreditch", "Notting Hill", "Camden", "Greenwich"],
+      title: "WORKOUT WAREHOUSE",
+      items: ["About Us", "Careers", "Press", "Blog"],
+    },
+    {
+      title: "SERVICES",
+      items: [
+        "Group Classes",
+        "Personal Training",
+        "Cold Plunge",
+        "Physiotherapy",
+        "BMI Analysis",
+      ],
     },
     {
       title: "SUPPORT",
@@ -1723,10 +2618,10 @@ const Footer = () => {
                   fontFamily: "'Inter Tight',sans-serif",
                   fontSize: 22,
                   fontWeight: 900,
-                  color: C.lime,
+                  color: C.primary,
                 }}
               >
-                WW
+                WORKOUT
               </span>
               <span
                 style={{
@@ -1737,7 +2632,7 @@ const Footer = () => {
                   letterSpacing: ".16em",
                 }}
               >
-                SQUAD
+                WAREHOUSE
               </span>
             </div>
             <p
@@ -1782,7 +2677,7 @@ const Footer = () => {
                     transition: "border-color .2s,color .2s,background .2s",
                   }}
                   onMouseEnter={(e) => {
-                    const c = wa ? WA_GREEN : C.lime;
+                    const c = wa ? WA_GREEN : C.primary;
                     e.currentTarget.style.borderColor = `${c}50`;
                     e.currentTarget.style.color = c;
                     if (wa) e.currentTarget.style.background = WA_GREEN_DIM;
@@ -1853,7 +2748,7 @@ const Footer = () => {
               color: C.slate,
             }}
           >
-            © 2026 WW SQUAD. All rights reserved.
+            © 2026 WORKOUT WAREHOUSE. All rights reserved.
           </span>
           <span
             style={{
@@ -1862,7 +2757,7 @@ const Footer = () => {
               color: C.slate,
             }}
           >
-            London · Built for the movement.
+            Nairobi · Built for the movement.
           </span>
         </div>
       </div>
@@ -1873,7 +2768,13 @@ const Footer = () => {
 /* ───────────────────────────────────────────
    MOBILE FAB  (JOIN · center bottom)
 ─────────────────────────────────────────── */
-const FAB = ({ openJoin, accent }) => {
+const FAB = ({
+  openJoin,
+  accent,
+}: {
+  openJoin: () => void;
+  accent: string;
+}) => {
   const { w } = useWindowSize();
   if (w >= 768) return null;
   return (
@@ -1940,10 +2841,10 @@ const FAB = ({ openJoin, accent }) => {
 const WA_GREEN = "#25c366";
 const WA_GREEN_DIM = "rgba(37,195,102,.18)";
 const WA_GREEN_GLOW = "rgba(37,195,102,.40)";
-// ── swap in the real WW SQUAD number (digits only, inc. country code) ──
-const WA_NUMBER = "447911123456";
+// ── Real Workout Warehouse WhatsApp contact ──
+const WA_NUMBER = "254759983995";
 const WA_MSG = encodeURIComponent(
-  "Hi WW SQUAD 👋 I'd like to learn more about joining.",
+  "Hi Workout Warehouse 👋 I'd like to learn more about joining.",
 );
 const WA_URL = `https://wa.me/${WA_NUMBER}?text=${WA_MSG}`;
 
@@ -1966,7 +2867,7 @@ const WhatsAppBubble = () => {
       href={WA_URL}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Chat with WW SQUAD on WhatsApp"
+      aria-label="Chat with WORKOUT WAREHOUSE on WhatsApp"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -2048,61 +2949,135 @@ const WhatsAppBubble = () => {
 };
 
 /* ───────────────────────────────────────────
-   JOIN FLOW MODAL
+   JOIN FLOW MODAL — WORKOUT WAREHOUSE PRICING
 ─────────────────────────────────────────── */
-const squadLevels = [
+// Standard membership tiers (show by default)
+const membershipLevels = [
   {
-    id: "recruit",
-    label: "RECRUIT",
-    sub: "Basic Access",
-    price: 29,
-    perks: ["Single Club", "Group Classes", "App Access"],
+    id: "monthly",
+    label: "MONTHLY",
+    sub: "Flexibility",
+    price: 6000,
+    perks: ["All Classes", "Open Gym Access", "5 Classes/Day"],
     color: C.slateL,
   },
   {
-    id: "elite",
-    label: "ELITE",
-    sub: "Multi-Club + Guests",
-    price: 59,
-    perks: ["All Clubs", "Guest Passes", "Priority Booking"],
-    color: C.lime,
+    id: "3month",
+    label: "3-MONTH",
+    sub: "Best Value",
+    price: 17000,
+    totalPrice: 17000,
+    perks: ["Everything in Monthly", "1 Free BMI Session", "Priority Booking"],
+    color: C.primary,
     popular: true,
   },
   {
-    id: "commander",
-    label: "COMMANDER",
-    sub: "Full Command",
-    price: 99,
+    id: "6month",
+    label: "6-MONTH",
+    sub: "Committed",
+    price: 32000,
+    totalPrice: 32000,
+    perks: ["Everything in 3-Month", "2 Free BMI Sessions", "Guest Passes"],
+    color: C.primary,
+  },
+  {
+    id: "annual",
+    label: "ANNUAL",
+    sub: "Full Access",
+    price: 59000,
+    totalPrice: 59000,
+    perks: ["Everything in 6-Month", "3 Free BMI Sessions", "VIP Events"],
+    color: C.gold,
+  },
+  {
+    id: "couples",
+    label: "COUPLES ANNUAL",
+    sub: "Train Together",
+    price: 105000,
+    totalPrice: 105000,
     perks: [
-      "Everything in Elite",
-      "Personal Training",
-      "Recovery Suite",
-      "VIP Events",
+      "2 Full Memberships",
+      "6 Free BMI Sessions Total",
+      "Priority Booking",
     ],
     color: C.gold,
   },
 ];
-const addonOptions = [
-  { id: "pt", label: "Personal Training Starter", price: 45, icon: "🏋️" },
-  { id: "locker", label: "Locker Rental", price: 12, icon: "🔒" },
+
+// Student membership tiers (separate toggle in join flow)
+const studentLevels = [
   {
-    id: "recovery",
-    label: "Recovery Pro (Sauna + Cold Plunge)",
-    price: 28,
-    icon: "❄️",
+    id: "student-peak",
+    label: "STUDENT PEAK",
+    sub: "All Hours Access",
+    price: 5000,
+    firstMonth: 2500,
+    perks: ["Unlimited Classes", "Open Gym 24/7", "Valid Student ID Required"],
+    color: C.yellow,
   },
   {
-    id: "health",
-    label: "Sync Apple Health / Google Fit",
-    price: 0,
-    icon: "📱",
+    id: "student-peak-dd",
+    label: "STUDENT PEAK DD",
+    sub: "Direct Debit (min 12mo)",
+    price: 4500,
+    perks: ["Same as Peak", "12-Month Commitment", "Auto-Renewal"],
+    color: C.slateL,
+  },
+  {
+    id: "student-offpeak",
+    label: "STUDENT OFF-PEAK",
+    sub: "8:00am – 4:30pm",
+    price: 3000,
+    firstMonth: 1500,
+    perks: ["Off-Peak Hours Only", "All Classes", "Valid Student ID Required"],
+    color: C.slateL,
   },
 ];
 
-const JoinModal = ({ onClose }) => {
-  const [step, setStep] = useState(0); // 0 = intro pulse
-  const [selectedLevel, setSelectedLevel] = useState("elite");
-  const [addons, setAddons] = useState([]);
+// Add-on options (cold plunge, physio, BMI)
+const addonOptions = [
+  {
+    id: "coldplunge-single",
+    label: "Cold Plunge (Single Session)",
+    price: 1500,
+    icon: "❄️",
+    category: "recovery",
+  },
+  {
+    id: "coldplunge-4",
+    label: "Cold Plunge (4 Sessions)",
+    price: 5500,
+    icon: "❄️",
+    category: "recovery",
+  },
+  {
+    id: "coldplunge-8",
+    label: "Cold Plunge (8 Sessions)",
+    price: 10000,
+    icon: "❄️",
+    category: "recovery",
+  },
+  {
+    id: "physio",
+    label: "Physiotherapy Session",
+    price: 3500,
+    icon: "🩺",
+    category: "wellness",
+  },
+  {
+    id: "bmi",
+    label: "BMI Analysis",
+    price: 500,
+    icon: "📊",
+    category: "wellness",
+  },
+];
+
+const JoinModal = ({ onClose }: { onClose: () => void }) => {
+  const [step, setStep] = useState(0); // 0=intro, 1=membership, 2=addons, 3=confirm
+  const [memberType, setMemberType] = useState("standard"); // "standard" or "student"
+  const [selectedLevel, setSelectedLevel] = useState("3month");
+  const [addons, setAddons] = useState<string[]>([]);
   const [confirmed, setConfirmed] = useState(false);
   const [introOpacity, setIntroOpacity] = useState(1);
   const { w } = useWindowSize();
@@ -2119,17 +3094,22 @@ const JoinModal = ({ onClose }) => {
     }
   }, [step]);
 
-  const toggleAddon = (id) =>
-    setAddons((p) => (p.includes(id) ? p.filter((a) => a !== id) : [...p, id]));
-  const basePrice = squadLevels.find((l) => l.id === selectedLevel)?.price || 0;
+  const toggleAddon = (id: string) =>
+    setAddons((p: string[]) =>
+      p.includes(id) ? p.filter((a) => a !== id) : [...p, id],
+    );
+
+  // Get the right pricing array based on member type
+  const levels = memberType === "student" ? studentLevels : membershipLevels;
+  const selectedTier = levels.find((l) => l.id === selectedLevel);
+  const basePrice = selectedTier?.price || 0;
   const addonTotal = addons.reduce(
     (s, a) => s + (addonOptions.find((o) => o.id === a)?.price || 0),
     0,
   );
   const total = basePrice + addonTotal;
 
-  const pad = isMobile ? "0 22px" : "0 40px";
-  const btnStyle = (color = C.lime) => ({
+  const btnStyle = (color = C.primary) => ({
     width: "100%",
     padding: "15px",
     background: color,
@@ -2145,7 +3125,7 @@ const JoinModal = ({ onClose }) => {
     transition: "transform .15s,box-shadow .15s",
   });
 
-  /* ── INTRO PULSE ── */
+  // ── INTRO PULSE ──
   if (step === 0)
     return (
       <div
@@ -2167,13 +3147,13 @@ const JoinModal = ({ onClose }) => {
             fontFamily: "'Inter Tight',sans-serif",
             fontSize: 52,
             fontWeight: 900,
-            color: C.lime,
+            color: C.primary,
             letterSpacing: "-.01em",
             animation: "ww-pulse 1.4s ease infinite",
-            textShadow: `0 0 40px ${C.limeGlow}`,
+            textShadow: `0 0 40px ${C.primaryGlow}`,
           }}
         >
-          WW
+          WORKOUT
         </div>
         <div
           style={{
@@ -2185,23 +3165,23 @@ const JoinModal = ({ onClose }) => {
             animation: "ww-pulse 1.4s ease .2s infinite",
           }}
         >
-          SQUAD
+          WAREHOUSE
         </div>
         <div
           style={{
             marginTop: 22,
             width: 3,
             height: 36,
-            background: C.lime,
+            background: C.primary,
             borderRadius: 2,
             animation: "ww-heartbeat 1.4s ease infinite",
-            boxShadow: `0 0 14px ${C.lime}`,
+            boxShadow: `0 0 14px ${C.primary}`,
           }}
         />
       </div>
     );
 
-  /* ── CONFIRMED ── */
+  // ── CONFIRMED ──
   if (confirmed)
     return (
       <div
@@ -2222,16 +3202,16 @@ const JoinModal = ({ onClose }) => {
             width: 88,
             height: 88,
             borderRadius: "50%",
-            background: `${C.lime}12`,
-            border: `2.5px solid ${C.lime}`,
+            background: `${C.primary}12`,
+            border: `2.5px solid ${C.primary}`,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            boxShadow: `0 0 50px ${C.limeGlow}`,
+            boxShadow: `0 0 50px ${C.primaryGlow}`,
             marginBottom: 28,
           }}
         >
-          <span style={{ fontSize: 40, color: C.lime }}>✓</span>
+          <span style={{ fontSize: 40, color: C.primary }}>✓</span>
         </div>
         <h2
           style={{
@@ -2245,7 +3225,7 @@ const JoinModal = ({ onClose }) => {
         >
           WELCOME TO
           <br />
-          <span style={{ color: C.lime }}>THE SQUAD</span>
+          <span style={{ color: C.primary }}>WORKOUT WAREHOUSE</span>
         </h2>
         <p
           style={{
@@ -2258,8 +3238,7 @@ const JoinModal = ({ onClose }) => {
             maxWidth: 360,
           }}
         >
-          Your {squadLevels.find((l) => l.id === selectedLevel)?.label}{" "}
-          membership is confirmed. Let's go.
+          Your {selectedTier?.label} membership is confirmed. Let's go.
         </p>
         <button
           onClick={onClose}
@@ -2272,7 +3251,7 @@ const JoinModal = ({ onClose }) => {
       </div>
     );
 
-  /* ── STEPS 1-4 ── */
+  // ── MAIN FLOW (steps 1-3) ──
   return (
     <div
       style={{
@@ -2284,7 +3263,7 @@ const JoinModal = ({ onClose }) => {
         animation: "ww-slideUp .38s cubic-bezier(.4,0,.2,1)",
       }}
     >
-      {/* Header bar */}
+      {/* Header */}
       <div
         style={{
           position: "sticky",
@@ -2297,7 +3276,6 @@ const JoinModal = ({ onClose }) => {
           alignItems: "center",
         }}
       >
-        {/* Progress dots */}
         <div style={{ display: "flex", gap: 6 }}>
           {[1, 2, 3].map((s) => (
             <div
@@ -2306,9 +3284,9 @@ const JoinModal = ({ onClose }) => {
                 width: s < step ? 30 : 8,
                 height: 3,
                 borderRadius: 2,
-                background: s < step ? C.lime : "rgba(255,255,255,.1)",
+                background: s < step ? C.primary : "rgba(255,255,255,.1)",
                 transition: "width .4s ease,background .4s ease",
-                boxShadow: s < step ? `0 0 7px ${C.lime}50` : "none",
+                boxShadow: s < step ? `0 0 7px ${C.primary}50` : "none",
               }}
             />
           ))}
@@ -2333,12 +3311,12 @@ const JoinModal = ({ onClose }) => {
       </div>
 
       <div style={{ padding: `12px ${isMobile ? "22px" : "40px"} 100px` }}>
-        {/* ── STEP 1 · Squad Base ── */}
+        {/* ── STEP 1: MEMBERSHIP SELECTION (with student toggle) ── */}
         {step === 1 && (
           <div
             style={{
               animation: "ww-fadeUp .45s ease",
-              maxWidth: 520,
+              maxWidth: 580,
               margin: "0 auto",
             }}
           >
@@ -2347,259 +3325,11 @@ const JoinModal = ({ onClose }) => {
                 fontFamily: "'Inter Tight',sans-serif",
                 fontSize: 11,
                 fontWeight: 600,
-                color: C.lime,
+                color: C.primary,
                 letterSpacing: ".2em",
               }}
             >
-              STEP 01 · YOUR SQUAD BASE
-            </div>
-            <h3
-              style={{
-                fontFamily: "'Inter Tight',sans-serif",
-                fontSize: isMobile ? 28 : 34,
-                fontWeight: 900,
-                color: C.white,
-                marginTop: 10,
-                lineHeight: 1.1,
-              }}
-            >
-              Find your
-              <br />
-              <span style={{ color: C.lime }}>home base.</span>
-            </h3>
-            <p
-              style={{
-                fontFamily: "'Tenor Sans',serif",
-                fontSize: 13,
-                color: C.slate,
-                marginTop: 8,
-              }}
-            >
-              GPS detected your location.
-            </p>
-
-            {/* Map card */}
-            <div
-              style={{
-                marginTop: 24,
-                background: C.card,
-                borderRadius: 22,
-                overflow: "hidden",
-                border: "1px solid rgba(255,255,255,.07)",
-              }}
-            >
-              <div
-                style={{
-                  height: 160,
-                  background:
-                    "linear-gradient(140deg,#161a16 0%,#0e120e 50%,#121618 100%)",
-                  position: "relative",
-                  overflow: "hidden",
-                }}
-              >
-                {/* Grid lines */}
-                <svg
-                  width="100%"
-                  height="100%"
-                  style={{ position: "absolute", inset: 0, opacity: 0.28 }}
-                >
-                  {[...Array(9)].map((_, i) => (
-                    <line
-                      key={`h${i}`}
-                      x1="0"
-                      y1={i * 21}
-                      x2="100%"
-                      y2={i * 21}
-                      stroke="#2d3748"
-                      strokeWidth=".6"
-                    />
-                  ))}
-                  {[...Array(14)].map((_, i) => (
-                    <line
-                      key={`v${i}`}
-                      x1={i * 38}
-                      y1="0"
-                      x2={i * 38}
-                      y2="100%"
-                      stroke="#2d3748"
-                      strokeWidth=".6"
-                    />
-                  ))}
-                </svg>
-                {/* Roads */}
-                <svg
-                  width="100%"
-                  height="100%"
-                  style={{ position: "absolute", inset: 0 }}
-                >
-                  <line
-                    x1="15%"
-                    y1="100%"
-                    x2="72%"
-                    y2="0%"
-                    stroke="#3a4555"
-                    strokeWidth="3.5"
-                  />
-                  <line
-                    x1="0%"
-                    y1="55%"
-                    x2="65%"
-                    y2="55%"
-                    stroke="#3a4555"
-                    strokeWidth="2.2"
-                  />
-                  <line
-                    x1="40%"
-                    y1="100%"
-                    x2="90%"
-                    y2="20%"
-                    stroke="#2f3a48"
-                    strokeWidth="2"
-                  />
-                </svg>
-                {/* Pin */}
-                <div
-                  style={{
-                    position: "absolute",
-                    left: "50%",
-                    top: "42%",
-                    transform: "translate(-50%,-50%)",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 36,
-                      height: 36,
-                      borderRadius: "50%",
-                      background: `${C.lime}1a`,
-                      border: `2px solid ${C.lime}`,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      boxShadow: `0 0 20px ${C.limeGlow}`,
-                      animation: "ww-ping 2.2s ease infinite",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 12,
-                        height: 12,
-                        borderRadius: "50%",
-                        background: C.lime,
-                        boxShadow: `0 0 8px ${C.lime}`,
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div style={{ padding: "18px 20px" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "flex-start",
-                  }}
-                >
-                  <div>
-                    <div
-                      style={{
-                        fontFamily: "'Inter Tight',sans-serif",
-                        fontSize: 16,
-                        fontWeight: 800,
-                        color: C.white,
-                      }}
-                    >
-                      WW SQUAD · Soho
-                    </div>
-                    <div
-                      style={{
-                        fontFamily: "'Tenor Sans',serif",
-                        fontSize: 12,
-                        color: C.slate,
-                        marginTop: 3,
-                      }}
-                    >
-                      27 Wardour Street, London W1
-                    </div>
-                  </div>
-                  <span
-                    style={{
-                      fontFamily: "'Inter Tight',sans-serif",
-                      fontSize: 10,
-                      fontWeight: 700,
-                      color: C.lime,
-                      background: C.limeDim,
-                      padding: "4px 11px",
-                      borderRadius: 50,
-                      letterSpacing: ".1em",
-                    }}
-                  >
-                    0.4 MI
-                  </span>
-                </div>
-                <div
-                  style={{
-                    marginTop: 14,
-                    display: "flex",
-                    gap: 8,
-                    flexWrap: "wrap",
-                  }}
-                >
-                  {["24/7", "Sauna", "Pool", "Cold Plunge", "+12"].map(
-                    (tag) => (
-                      <span
-                        key={tag}
-                        style={{
-                          fontFamily: "'Inter Tight',sans-serif",
-                          fontSize: 9.5,
-                          fontWeight: 600,
-                          color: C.slateL,
-                          background: "rgba(255,255,255,.06)",
-                          padding: "5px 10px",
-                          borderRadius: 7,
-                          letterSpacing: ".08em",
-                        }}
-                      >
-                        {tag}
-                      </span>
-                    ),
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setStep(2)}
-              style={{ ...btnStyle(), marginTop: 24 }}
-              onMouseDown={(e) =>
-                (e.currentTarget.style.transform = "scale(.96)")
-              }
-              onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-            >
-              CONFIRM · SOHO BASE →
-            </button>
-          </div>
-        )}
-
-        {/* ── STEP 2 · Squad Level ── */}
-        {step === 2 && (
-          <div
-            style={{
-              animation: "ww-fadeUp .45s ease",
-              maxWidth: 520,
-              margin: "0 auto",
-            }}
-          >
-            <div
-              style={{
-                fontFamily: "'Inter Tight',sans-serif",
-                fontSize: 11,
-                fontWeight: 600,
-                color: C.lime,
-                letterSpacing: ".2em",
-              }}
-            >
-              STEP 02 · SQUAD LEVEL
+              STEP 01 · SELECT MEMBERSHIP
             </div>
             <h3
               style={{
@@ -2613,19 +3343,73 @@ const JoinModal = ({ onClose }) => {
             >
               Choose your
               <br />
-              <span style={{ color: C.lime }}>rank.</span>
+              <span style={{ color: C.primary }}>plan.</span>
             </h3>
 
+            {/* Member Type Toggle */}
             <div
+              style={{
+                marginTop: 24,
+                display: "flex",
+                gap: 8,
+                background: C.card,
+                padding: 6,
+                borderRadius: 50,
+                border: "1px solid rgba(255,255,255,.06)",
+              }}
+            >
+              {[
+                { id: "standard", label: "STANDARD" },
+                { id: "student", label: "STUDENT" },
+              ].map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => {
+                    setMemberType(t.id);
+                    setSelectedLevel(
+                      t.id === "student" ? "student-peak" : "3month",
+                    );
+                  }}
+                  style={{
+                    flex: 1,
+                    padding: "10px",
+                    background: memberType === t.id ? C.primary : "transparent",
+                    border: "none",
+                    borderRadius: 50,
+                    fontFamily: "'Inter Tight',sans-serif",
+                    fontSize: 11,
+                    fontWeight: 800,
+                    color: memberType === t.id ? C.bg : C.slateL,
+                    letterSpacing: ".14em",
+                    cursor: "pointer",
+                    transition: "all .25s",
+                    boxShadow:
+                      memberType === t.id
+                        ? `0 0 12px ${C.primaryGlow}`
+                        : "none",
+                  }}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Pricing Cards */}
+            <div
+              key={memberType}
               style={{
                 marginTop: 24,
                 display: "flex",
                 flexDirection: "column",
                 gap: 12,
+                animation: "ww-fadeIn .3s ease",
               }}
             >
-              {squadLevels.map((lvl) => {
+              {levels.map((lvl) => {
                 const active = selectedLevel === lvl.id;
+                const isMonthly =
+                  lvl.id === "monthly" || lvl.id.startsWith("student");
+                const priceLabel = isMonthly ? "/mo" : " total";
                 return (
                   <button
                     key={lvl.id}
@@ -2642,7 +3426,7 @@ const JoinModal = ({ onClose }) => {
                       position: "relative",
                     }}
                   >
-                    {lvl.popular && (
+                    {(lvl as any).popular && (
                       <span
                         style={{
                           position: "absolute",
@@ -2652,11 +3436,11 @@ const JoinModal = ({ onClose }) => {
                           fontSize: 9,
                           fontWeight: 800,
                           color: C.bg,
-                          background: C.lime,
+                          background: C.primary,
                           padding: "3px 12px",
                           borderRadius: 50,
                           letterSpacing: ".14em",
-                          boxShadow: `0 2px 12px ${C.limeGlow}`,
+                          boxShadow: `0 2px 12px ${C.primaryGlow}`,
                         }}
                       >
                         MOST POPULAR
@@ -2692,17 +3476,30 @@ const JoinModal = ({ onClose }) => {
                         >
                           {lvl.sub}
                         </div>
+                        {(lvl as any).firstMonth && (
+                          <div
+                            style={{
+                              fontFamily: "'Tenor Sans',serif",
+                              fontSize: 11,
+                              color: C.yellow,
+                              marginTop: 4,
+                            }}
+                          >
+                            KSh {(lvl as any).firstMonth.toLocaleString()} first
+                            month
+                          </div>
+                        )}
                       </div>
                       <div style={{ textAlign: "right" }}>
                         <span
                           style={{
                             fontFamily: "'Inter Tight',sans-serif",
-                            fontSize: 26,
+                            fontSize: 24,
                             fontWeight: 900,
                             color: active ? lvl.color : C.white,
                           }}
                         >
-                          £{lvl.price}
+                          KSh {lvl.price.toLocaleString()}
                         </span>
                         <span
                           style={{
@@ -2711,7 +3508,7 @@ const JoinModal = ({ onClose }) => {
                             color: C.slate,
                           }}
                         >
-                          /mo
+                          {priceLabel}
                         </span>
                       </div>
                     </div>
@@ -2750,7 +3547,7 @@ const JoinModal = ({ onClose }) => {
             </div>
 
             <button
-              onClick={() => setStep(3)}
+              onClick={() => setStep(2)}
               style={{ ...btnStyle(), marginTop: 26 }}
               onMouseDown={(e) =>
                 (e.currentTarget.style.transform = "scale(.96)")
@@ -2759,11 +3556,32 @@ const JoinModal = ({ onClose }) => {
             >
               CONTINUE →
             </button>
+
+            {/* Corporate note */}
+            <div
+              style={{
+                marginTop: 16,
+                textAlign: "center",
+                fontFamily: "'Tenor Sans',serif",
+                fontSize: 12,
+                color: C.slate,
+              }}
+            >
+              Corporate memberships?{" "}
+              <a
+                href={WA_URL}
+                target="_blank"
+                rel="noopener"
+                style={{ color: C.primary, textDecoration: "none" }}
+              >
+                Contact us on WhatsApp
+              </a>
+            </div>
           </div>
         )}
 
-        {/* ── STEP 3 · Add-ons ── */}
-        {step === 3 && (
+        {/* ── STEP 2: ADD-ONS ── */}
+        {step === 2 && (
           <div
             style={{
               animation: "ww-fadeUp .45s ease",
@@ -2776,11 +3594,11 @@ const JoinModal = ({ onClose }) => {
                 fontFamily: "'Inter Tight',sans-serif",
                 fontSize: 11,
                 fontWeight: 600,
-                color: C.lime,
+                color: C.primary,
                 letterSpacing: ".2em",
               }}
             >
-              STEP 03 · LEVEL UP
+              STEP 02 · ENHANCE YOUR PLAN
             </div>
             <h3
               style={{
@@ -2792,9 +3610,9 @@ const JoinModal = ({ onClose }) => {
                 lineHeight: 1.1,
               }}
             >
-              Stack your
+              Add-ons
               <br />
-              <span style={{ color: C.lime }}>edge.</span>
+              <span style={{ color: C.primary }}>(optional).</span>
             </h3>
             <p
               style={{
@@ -2804,7 +3622,7 @@ const JoinModal = ({ onClose }) => {
                 marginTop: 8,
               }}
             >
-              Optional add-ons. Tap to include.
+              Boost your membership with recovery & wellness.
             </p>
 
             <div
@@ -2816,7 +3634,7 @@ const JoinModal = ({ onClose }) => {
               }}
             >
               {addonOptions.map((addon) => {
-                const active = addons.includes(addon.id);
+                const active = addons.includes(addon.id as string);
                 return (
                   <button
                     key={addon.id}
@@ -2825,13 +3643,13 @@ const JoinModal = ({ onClose }) => {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
-                      background: active ? `${C.lime}0a` : C.card,
-                      border: `1.5px solid ${active ? C.lime : "rgba(255,255,255,.07)"}`,
+                      background: active ? `${C.primary}0a` : C.card,
+                      border: `1.5px solid ${active ? C.primary : "rgba(255,255,255,.07)"}`,
                       borderRadius: 16,
                       padding: "15px 18px",
                       cursor: "pointer",
                       transition: "all .25s ease",
-                      boxShadow: active ? `0 0 16px ${C.limeGlow}` : "none",
+                      boxShadow: active ? `0 0 16px ${C.primaryGlow}` : "none",
                     }}
                   >
                     <div
@@ -2844,7 +3662,7 @@ const JoinModal = ({ onClose }) => {
                             fontFamily: "'Inter Tight',sans-serif",
                             fontSize: 14,
                             fontWeight: 700,
-                            color: active ? C.lime : C.white,
+                            color: active ? C.primary : C.white,
                             transition: "color .25s",
                           }}
                         >
@@ -2854,13 +3672,11 @@ const JoinModal = ({ onClose }) => {
                           style={{
                             fontFamily: "'Tenor Sans',serif",
                             fontSize: 11,
-                            color: addon.price === 0 ? C.lime : C.slate,
+                            color: C.slate,
                             marginTop: 2,
                           }}
                         >
-                          {addon.price > 0
-                            ? `+£${addon.price}/mo`
-                            : "Free · Personalizes your dashboard"}
+                          +KSh {addon.price.toLocaleString()}
                         </div>
                       </div>
                     </div>
@@ -2870,13 +3686,15 @@ const JoinModal = ({ onClose }) => {
                         height: 30,
                         borderRadius: "50%",
                         flexShrink: 0,
-                        background: active ? C.lime : "transparent",
-                        border: `2px solid ${active ? C.lime : "rgba(255,255,255,.2)"}`,
+                        background: active ? C.primary : "transparent",
+                        border: `2px solid ${active ? C.primary : "rgba(255,255,255,.2)"}`,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         transition: "all .25s ease",
-                        boxShadow: active ? `0 0 10px ${C.limeGlow}` : "none",
+                        boxShadow: active
+                          ? `0 0 10px ${C.primaryGlow}`
+                          : "none",
                       }}
                     >
                       <span
@@ -2895,7 +3713,7 @@ const JoinModal = ({ onClose }) => {
             </div>
 
             <button
-              onClick={() => setStep(4)}
+              onClick={() => setStep(3)}
               style={{ ...btnStyle(), marginTop: 26 }}
               onMouseDown={(e) =>
                 (e.currentTarget.style.transform = "scale(.96)")
@@ -2907,8 +3725,8 @@ const JoinModal = ({ onClose }) => {
           </div>
         )}
 
-        {/* ── STEP 4 · Confirm ── */}
-        {step === 4 && (
+        {/* ── STEP 3: CONFIRM ── */}
+        {step === 3 && (
           <div
             style={{
               animation: "ww-fadeUp .45s ease",
@@ -2921,11 +3739,11 @@ const JoinModal = ({ onClose }) => {
                 fontFamily: "'Inter Tight',sans-serif",
                 fontSize: 11,
                 fontWeight: 600,
-                color: C.lime,
+                color: C.primary,
                 letterSpacing: ".2em",
               }}
             >
-              REVIEW
+              STEP 03 · REVIEW
             </div>
             <h3
               style={{
@@ -2937,7 +3755,9 @@ const JoinModal = ({ onClose }) => {
                 lineHeight: 1.1,
               }}
             >
-              Your <span style={{ color: C.lime }}>Squad</span> summary.
+              Your
+              <br />
+              <span style={{ color: C.primary }}>summary.</span>
             </h3>
 
             <div
@@ -2949,81 +3769,61 @@ const JoinModal = ({ onClose }) => {
                 overflow: "hidden",
               }}
             >
-              {/* Base row */}
               <div
                 style={{
                   padding: "16px 20px",
                   borderBottom: "1px solid rgba(255,255,255,.06)",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
                 }}
               >
-                <div>
-                  <div
-                    style={{
-                      fontFamily: "'Inter Tight',sans-serif",
-                      fontSize: 13,
-                      fontWeight: 700,
-                      color: C.white,
-                    }}
-                  >
-                    Squad Base
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "'Tenor Sans',serif",
-                      fontSize: 12,
-                      color: C.slate,
-                    }}
-                  >
-                    WW SQUAD · Soho
-                  </div>
+                <div
+                  style={{
+                    fontFamily: "'Inter Tight',sans-serif",
+                    fontSize: 13,
+                    fontWeight: 700,
+                    color: C.white,
+                  }}
+                >
+                  Membership Type
                 </div>
-                <span style={{ color: C.lime, fontSize: 16 }}>✓</span>
+                <div
+                  style={{
+                    fontFamily: "'Tenor Sans',serif",
+                    fontSize: 12,
+                    color: C.slate,
+                  }}
+                >
+                  {memberType === "student" ? "Student" : "Standard"}
+                </div>
               </div>
-              {/* Level row */}
               <div
                 style={{
                   padding: "16px 20px",
                   borderBottom: "1px solid rgba(255,255,255,.06)",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
                 }}
               >
-                <div>
-                  <div
-                    style={{
-                      fontFamily: "'Inter Tight',sans-serif",
-                      fontSize: 13,
-                      fontWeight: 700,
-                      color: C.white,
-                    }}
-                  >
-                    Squad Level
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "'Tenor Sans',serif",
-                      fontSize: 12,
-                      color: C.slate,
-                    }}
-                  >
-                    {squadLevels.find((l) => l.id === selectedLevel)?.sub}
-                  </div>
-                </div>
-                <div style={{ textAlign: "right" }}>
-                  <div
-                    style={{
-                      fontFamily: "'Inter Tight',sans-serif",
-                      fontSize: 14,
-                      fontWeight: 800,
-                      color: squadLevels.find((l) => l.id === selectedLevel)
-                        ?.color,
-                    }}
-                  >
-                    {squadLevels.find((l) => l.id === selectedLevel)?.label}
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <div>
+                    <div
+                      style={{
+                        fontFamily: "'Inter Tight',sans-serif",
+                        fontSize: 13,
+                        fontWeight: 700,
+                        color: C.white,
+                      }}
+                    >
+                      {selectedTier?.label}
+                    </div>
+                    <div
+                      style={{
+                        fontFamily: "'Tenor Sans',serif",
+                        fontSize: 12,
+                        color: C.slate,
+                      }}
+                    >
+                      {selectedTier?.sub}
+                    </div>
                   </div>
                   <div
                     style={{
@@ -3032,11 +3832,10 @@ const JoinModal = ({ onClose }) => {
                       color: C.slateL,
                     }}
                   >
-                    £{basePrice}/mo
+                    KSh {basePrice.toLocaleString()}
                   </div>
                 </div>
               </div>
-              {/* Add-ons */}
               {addons.length > 0 && (
                 <div
                   style={{
@@ -3073,7 +3872,7 @@ const JoinModal = ({ onClose }) => {
                             color: C.slateL,
                           }}
                         >
-                          {a.icon} {a.label}
+                          {a?.icon} {a?.label}
                         </span>
                         <span
                           style={{
@@ -3083,15 +3882,14 @@ const JoinModal = ({ onClose }) => {
                             color: C.slateL,
                           }}
                         >
-                          {a.price > 0 ? `£${a.price}` : "Free"}
+                          KSh {a && a.price ? a.price.toLocaleString() : "0"}
                         </span>
                       </div>
                     );
                   })}
                 </div>
               )}
-              {/* Total */}
-              <div style={{ padding: "20px", background: `${C.lime}06` }}>
+              <div style={{ padding: "20px", background: `${C.primary}06` }}>
                 <div
                   style={{
                     display: "flex",
@@ -3108,22 +3906,17 @@ const JoinModal = ({ onClose }) => {
                       letterSpacing: ".1em",
                     }}
                   >
-                    TOTAL / MONTH
+                    TOTAL
                   </span>
                   <span
                     style={{
                       fontFamily: "'Inter Tight',sans-serif",
                       fontSize: 32,
                       fontWeight: 900,
-                      color: C.lime,
+                      color: C.primary,
                     }}
                   >
-                    £{total}
-                    <span
-                      style={{ fontSize: 14, color: C.slate, fontWeight: 600 }}
-                    >
-                      /mo
-                    </span>
+                    KSh {total.toLocaleString()}
                   </span>
                 </div>
               </div>
@@ -3142,7 +3935,7 @@ const JoinModal = ({ onClose }) => {
               }
               onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
             >
-              JOIN THE SQUAD
+              JOIN WORKOUT WAREHOUSE
             </button>
             <div
               style={{
@@ -3165,9 +3958,9 @@ const JoinModal = ({ onClose }) => {
 /* ───────────────────────────────────────────
    ROOT APP
 ─────────────────────────────────────────── */
-export default function WWSquad() {
+export default function WorkoutWarehouse() {
   const [joinOpen, setJoinOpen] = useState(false);
-  const [accent, setAccent] = useState(C.lime);
+  const [accent, setAccent] = useState(C.primary);
 
   useScrollReveal();
 
@@ -3183,6 +3976,7 @@ export default function WWSquad() {
       <WhySection accent={accent} />
       <CoachesSection accent={accent} />
       <Testimonials accent={accent} />
+      <PricingScheduleSection accent={accent} />
       <CtaBand openJoin={() => setJoinOpen(true)} accent={accent} />
       <Footer />
 
