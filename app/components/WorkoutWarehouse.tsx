@@ -1003,10 +1003,10 @@ const WhySection = ({ accent }: { accent: string }) => {
               maxWidth: 480,
             }}
           >
-            WORKOUT WAREHOUSE fuses the luxury of Equinox, the raw energy of
-            Gymbox, the speed of PureGym, and the tech-driven community of
-            Peloton — into one obsessive, members-first experience built for
-            2026.
+            WORKOUT WAREHOUSE blends elite luxury, raw intensity, lightning-fast
+            convenience, and a tech-powered community — into one obsessive,
+            members-first experience built for 2026. Every space. Every session.
+            Every second — engineered for you and your squad.
           </p>
           <p
             style={{
