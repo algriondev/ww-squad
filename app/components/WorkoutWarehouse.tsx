@@ -94,9 +94,7 @@ function useScrollReveal() {
    HOOK: WINDOW SIZE
 ─────────────────────────────────────────── */
 function useWindowSize() {
-  const [size, setSize] = useState({
-    w: typeof window !== "undefined" ? window.innerWidth : 1200,
-  });
+  const [size, setSize] = useState({ w: 1200 });
   useEffect(() => {
     const up = () => setSize({ w: window.innerWidth });
     window.addEventListener("resize", up);
@@ -454,6 +452,27 @@ const Hero = ({ openJoin }: { openJoin: () => void }) => {
         alignItems: "flex-end",
       }}
     >
+      {/* Hero Video Background */}
+      <video
+        key="hero-video"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          zIndex: 1,
+        }}
+      >
+        <source src="/media/hero.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+
       {/* Layered cinematic bg */}
       <div
         style={{
@@ -461,6 +480,7 @@ const Hero = ({ openJoin }: { openJoin: () => void }) => {
           inset: 0,
           background:
             "linear-gradient(155deg,#0d100f 0%,#111210 30%,#0c0e12 60%,#0c0c0c 100%)",
+          zIndex: 0,
         }}
       />
       {/* Warm blob */}
@@ -752,33 +772,33 @@ const vibes = [
     id: "strength",
     label: "STRENGTH",
     sub: "Raw Power",
-    icon: "⚡",
     color: C.red,
     bg: "radial-gradient(135deg at 30% 70%,rgba(232,62,62,.15) 0%,transparent 60%)",
+    bgImage: "/media/vibe-strength.webp",
   },
   {
     id: "zen",
     label: "ZEN",
     sub: "Mind Reset",
-    icon: "🌊",
     color: C.blue,
     bg: "radial-gradient(135deg 70% 30%,rgba(91,163,217,.12) 0%,transparent 60%)",
+    bgImage: "/media/vibe-zen.webp",
   },
   {
     id: "sweat",
     label: "SWEAT",
     sub: "Burn Zone",
-    icon: "🔥",
     color: "#ff8c42",
     bg: "radial-gradient(135deg at 60% 40%,rgba(255,140,66,.13) 0%,transparent 60%)",
+    bgImage: "/media/vibe-sweat.webp",
   },
   {
     id: "recovery",
     label: "RECOVERY",
     sub: "Restore",
-    icon: "❄️",
     color: C.ice,
     bg: "radial-gradient(135deg at 50% 80%,rgba(126,207,227,.12) 0%,transparent 60%)",
+    bgImage: "/media/vibe-recovery.webp",
   },
 ];
 
@@ -827,7 +847,6 @@ const VibeGrid = ({
             <span style={{ color: accent }}>zone.</span>
           </h2>
         </div>
-
         <div
           style={{
             display: "grid",
@@ -841,7 +860,7 @@ const VibeGrid = ({
               <div
                 key={v.id}
                 className="ww-reveal"
-                style={{ animationDelay: `${i * 0.08}s` }}
+                style={{ animationDelay: `${i * 0.02}s` }}
               >
                 <button
                   onClick={() => setAccent(active ? C.primary : v.color)}
@@ -849,7 +868,13 @@ const VibeGrid = ({
                     width: "100%",
                     textAlign: "left",
                     cursor: "pointer",
-                    background: active ? v.bg : C.card,
+                    backgroundImage: v.bgImage
+                      ? `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${v.bgImage})`
+                      : "none",
+                    backgroundColor: v.bgImage ? "transparent" : C.card,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
                     border: `1.5px solid ${active ? v.color : "rgba(255,255,255,.06)"}`,
                     borderRadius: 20,
                     padding: isMobile ? "22px 18px" : "32px 24px",
@@ -859,22 +884,17 @@ const VibeGrid = ({
                   onMouseEnter={(e) => {
                     if (!active) {
                       e.currentTarget.style.borderColor = `${v.color}60`;
-                      e.currentTarget.style.background = `${v.color}08`;
+                      e.currentTarget.style.backgroundColor = `${v.color}08`;
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (!active) {
                       e.currentTarget.style.borderColor =
                         "rgba(255,255,255,.06)";
-                      e.currentTarget.style.background = C.card;
+                      e.currentTarget.style.backgroundColor = "transparent";
                     }
                   }}
                 >
-                  <div
-                    style={{ fontSize: isMobile ? 26 : 32, marginBottom: 10 }}
-                  >
-                    {v.icon}
-                  </div>
                   <div
                     style={{
                       fontFamily: "'Inter Tight',sans-serif",
@@ -913,7 +933,27 @@ const VibeGrid = ({
             );
           })}
         </div>
+        {/* stats grid closes */}
+
+        {/* Gym Interior Photo */}
+        <div
+          className="ww-reveal"
+          style={{ animationDelay: ".3s", marginTop: isMobile ? 32 : 48 }}
+        >
+          <img
+            src="/media/gym-interior.webp"
+            alt="Workout Warehouse interior"
+            style={{
+              width: "100%",
+              borderRadius: 18,
+              display: "block",
+              maxHeight: 400,
+              objectFit: "cover",
+            }}
+          />
+        </div>
       </div>
+      {/* container closes */}
     </section>
   );
 };
@@ -1096,7 +1136,7 @@ const coaches = [
     name: "SARAH K.",
     role: "HIIT & Conditioning",
     base: "Highway Mall",
-    img: "🏋️",
+    img: "/media/coach-sarah.webp",
     classes: 847,
     rating: 4.9,
   },
@@ -1104,7 +1144,7 @@ const coaches = [
     name: "ALEX M.",
     role: "Strength & Power",
     base: "Highway Mall",
-    img: "💪",
+    img: "/media/coach-alex.webp",
     classes: 612,
     rating: 4.8,
   },
@@ -1112,7 +1152,7 @@ const coaches = [
     name: "LUNA R.",
     role: "Zen & Flow",
     base: "Highway Mall",
-    img: "🧘",
+    img: "/media/coach-luna.webp",
     classes: 1204,
     rating: 5.0,
   },
@@ -1120,7 +1160,7 @@ const coaches = [
     name: "JAKE T.",
     role: "Cardio & Endurance",
     base: "Highway Mall",
-    img: "🏃",
+    img: "/media/coach-jake.webp",
     classes: 538,
     rating: 4.7,
   },
@@ -1128,7 +1168,7 @@ const coaches = [
     name: "MIA S.",
     role: "Recovery & Mobility",
     base: "Highway Mall",
-    img: "❄️",
+    img: "/media/coach-mia.webp",
     classes: 423,
     rating: 4.9,
   },
@@ -1161,15 +1201,24 @@ const CoachCard = ({ coach, accent }: { coach: any; accent: string }) => {
       {/* Avatar area */}
       <div
         style={{
-          height: 160,
+          height: 280,
           background: `linear-gradient(135deg,${C.cardUp},${C.card})`,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           position: "relative",
+          overflow: "hidden",
         }}
       >
-        <div style={{ fontSize: 56 }}>{coach.img}</div>
+        <img
+          src={coach.img}
+          alt={coach.name}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
+        />
         <div
           style={{
             position: "absolute",
@@ -1376,7 +1425,7 @@ const CoachesSection = ({ accent }: { accent: string }) => {
           <div
             key={i}
             className="ww-reveal"
-            style={{ animationDelay: `${i * 0.07}s` }}
+            style={{ animationDelay: `${i * 0.02}s` }}
           >
             <CoachCard coach={c} accent={accent} />
           </div>
