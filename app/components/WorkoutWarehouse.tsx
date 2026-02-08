@@ -5,6 +5,70 @@ import { useState, useEffect, useRef, useCallback } from "react";
 /* ───────────────────────────────────────────
    DESIGN TOKENS — WORKOUT WAREHOUSE REBRAND
 ─────────────────────────────────────────── */
+const LoadingScreen = () => {
+  const [opacity, setOpacity] = useState(1);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setOpacity(0), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (opacity === 0) return null;
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 9999,
+        background: "#000000",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        opacity,
+        transition: "opacity 0.5s ease",
+        pointerEvents: opacity === 0 ? "none" : "auto",
+      }}
+    >
+      <div
+        style={{
+          fontFamily: "'Inter Tight',sans-serif",
+          fontSize: 52,
+          fontWeight: 900,
+          color: "#b366cc",
+          letterSpacing: "-.01em",
+          animation: "ww-pulse 1.4s ease infinite",
+          textShadow: "0 0 40px rgba(179,102,204,0.45)",
+        }}
+      >
+        WORKOUT
+      </div>
+      <div
+        style={{
+          fontFamily: "'Inter Tight',sans-serif",
+          fontSize: 52,
+          fontWeight: 800,
+          color: "#f0f0f0",
+          letterSpacing: ".18em",
+        }}
+      >
+        WAREHOUSE
+      </div>
+      <div
+        style={{
+          marginTop: 22,
+          width: 3,
+          height: 36,
+          background: "#b366cc",
+          borderRadius: 2,
+          animation: "ww-heartbeat 1.4s ease infinite",
+          boxShadow: "0 0 14px #b366cc",
+        }}
+      />
+    </div>
+  );
+};
 const C = {
   bg: "#000000", // Pure black (from brand images)
   card: "#0d0d0d", // Slightly lifted black for cards
@@ -46,7 +110,7 @@ const GlobalStyles = () => {
       .ww-grain{position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.04}
 
       /* ── Scroll Reveal ── */
-      .ww-reveal{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1)}
+      .ww-reveal{opacity:0;transform:translateY(16px);transition:opacity .35s cubic-bezier(.4,0,.2,1),transform .35s cubic-bezier(.4,0,.2,1)}
       .ww-reveal.visible{opacity:1;transform:translateY(0)}
 
       /* ── Ticker ── */
@@ -67,6 +131,17 @@ const GlobalStyles = () => {
       ::-webkit-scrollbar-track{background:#0c0c0c}
       ::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:3px}
       ::-webkit-scrollbar-thumb:hover{background:#3a3a3a}
+
+      /* Disable animations on slow devices */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
     `;
     document.head.appendChild(el);
   }, []);
@@ -81,9 +156,12 @@ function useScrollReveal() {
     const obs = new IntersectionObserver(
       (entries) =>
         entries.forEach((e) => {
-          if (e.isIntersecting) e.target.classList.add("visible");
+          if (e.isIntersecting) {
+            e.target.classList.add("visible");
+            obs.unobserve(e.target);
+          }
         }),
-      { threshold: 0.15 },
+      { threshold: 0.15, rootMargin: "50px" },
     );
     document.querySelectorAll(".ww-reveal").forEach((el) => obs.observe(el));
     return () => obs.disconnect();
@@ -459,7 +537,8 @@ const Hero = ({ openJoin }: { openJoin: () => void }) => {
         muted
         loop
         playsInline
-        preload="auto"
+        preload="none"
+        poster="/media/hero-poster.png"
         style={{
           position: "absolute",
           inset: 0,
@@ -868,10 +947,16 @@ const VibeGrid = ({
                     width: "100%",
                     textAlign: "left",
                     cursor: "pointer",
-                    backgroundImage: v.bgImage
-                      ? `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${v.bgImage})`
-                      : "none",
-                    backgroundColor: v.bgImage ? "transparent" : C.card,
+                    backgroundImage:
+                      active && v.bgImage
+                        ? `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${v.bgImage})`
+                        : "none",
+                    backgroundColor:
+                      active && v.bgImage
+                        ? "transparent"
+                        : active
+                          ? v.bg
+                          : C.card,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
@@ -943,6 +1028,7 @@ const VibeGrid = ({
           <img
             src="/media/gym-interior.webp"
             alt="Workout Warehouse interior"
+            loading="lazy"
             style={{
               width: "100%",
               borderRadius: 18,
@@ -4017,6 +4103,7 @@ export default function WorkoutWarehouse() {
     <>
       <GlobalStyles />
       <Grain />
+      <LoadingScreen />
 
       <Nav openJoin={() => setJoinOpen(true)} />
       <Hero openJoin={() => setJoinOpen(true)} />

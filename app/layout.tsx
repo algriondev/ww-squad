@@ -50,7 +50,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Google Fonts — Inter Tight (display) + Tenor Sans (body serif) */}
+        {/* Preload critical fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
@@ -61,6 +61,9 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Tenor+Sans&display=swap"
           rel="stylesheet"
         />
+
+        {/* Preload hero poster image */}
+        <link rel="preload" as="image" href="/media/hero-poster.png" />
 
         {/* Dynamic title script — updates <title> based on server time */}
         <script
