@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, memo } from "react";
 
 /* ───────────────────────────────────────────
    DESIGN TOKENS — WORKOUT WAREHOUSE REBRAND
@@ -9,7 +9,7 @@ const LoadingScreen = () => {
   const [opacity, setOpacity] = useState(1);
 
   useEffect(() => {
-    const timer = setTimeout(() => setOpacity(0), 1000);
+    const timer = setTimeout(() => setOpacity(0), 100);
     return () => clearTimeout(timer);
   }, []);
 
@@ -98,49 +98,11 @@ const GlobalStyles = () => {
     const el = document.createElement("style");
     el.id = id;
     el.textContent = `
-      @import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Tenor+Sans&display=swap');
-      *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-      html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
-      body{background:#0c0c0c;color:#ececec;overflow-x:hidden}
-      ::selection{background:rgba(204,255,0,0.25);color:#fff}
-      img{display:block;max-width:100%}
-      button{-webkit-tap-highlight-color:transparent}
-
-      /* ── Grain ── */
-      .ww-grain{position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.04}
-
-      /* ── Scroll Reveal ── */
-      .ww-reveal{opacity:0;transform:translateY(16px);transition:opacity .35s cubic-bezier(.4,0,.2,1),transform .35s cubic-bezier(.4,0,.2,1)}
-      .ww-reveal.visible{opacity:1;transform:translateY(0)}
-
-      /* ── Ticker ── */
-      @keyframes ticker-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-      .ww-ticker-track{display:flex;white-space:nowrap;animation:ticker-scroll 28s linear infinite}
-
-      /* ── Pulse ── */
-      @keyframes ww-pulse{0%,100%{opacity:.55;transform:scale(.96)}50%{opacity:1;transform:scale(1.04)}}
-      @keyframes ww-heartbeat{0%,100%{transform:scaleY(1);opacity:.5}50%{transform:scaleY(1.7);opacity:1}}
+      @import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800;900&family=Tenor+Sans&display=swap');
       @keyframes ww-ping{0%{box-shadow:0 0 0 0 rgba(204,255,0,.45)}70%{box-shadow:0 0 0 14px rgba(204,255,0,0)}100%{box-shadow:0 0 0 0 rgba(204,255,0,0)}}
-      @keyframes ww-fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-      @keyframes ww-slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-      @keyframes ww-fadeIn{from{opacity:0}to{opacity:1}}
       @keyframes ww-spin{to{transform:rotate(360deg)}}
-
-      /* ── Scrollbar ── */
-      ::-webkit-scrollbar{width:6px}
-      ::-webkit-scrollbar-track{background:#0c0c0c}
-      ::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:3px}
-      ::-webkit-scrollbar-thumb:hover{background:#3a3a3a}
-
-      /* Disable animations on slow devices */
       @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-          animation-duration: 0.01ms !important;
-          animation-iteration-count: 1 !important;
-          transition-duration: 0.01ms !important;
-        }
+        * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
       }
     `;
     document.head.appendChild(el);
@@ -152,20 +114,8 @@ const GlobalStyles = () => {
    HOOK: SCROLL REVEAL
 ─────────────────────────────────────────── */
 function useScrollReveal() {
-  useEffect(() => {
-    const obs = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add("visible");
-            obs.unobserve(e.target);
-          }
-        }),
-      { threshold: 0.15, rootMargin: "50px" },
-    );
-    document.querySelectorAll(".ww-reveal").forEach((el) => obs.observe(el));
-    return () => obs.disconnect();
-  }, []);
+  // Observer disabled - all content visible immediately
+  // This prevents jank from callback fires during scroll
 }
 
 /* ───────────────────────────────────────────
@@ -185,19 +135,26 @@ function useWindowSize() {
 /* ───────────────────────────────────────────
    GRAIN OVERLAY (SVG noise)
 ─────────────────────────────────────────── */
-const Grain = () => (
-  <svg className="ww-grain" style={{ width: "100%", height: "100%" }}>
+const Grain = memo(() => (
+  <svg
+    className="ww-grain"
+    style={{
+      width: "100%",
+      height: "100%",
+      willChange: "opacity",
+    }}
+  >
     <filter id="ww-grain-f">
       <feTurbulence
         type="fractalNoise"
         baseFrequency="0.72"
-        numOctaves="4"
+        numOctaves="3"
         stitchTiles="stitch"
       />
     </filter>
     <rect width="100%" height="100%" filter="url(#ww-grain-f)" />
   </svg>
-);
+));
 
 /* ───────────────────────────────────────────
    TICKER
@@ -289,7 +246,7 @@ const Nav = ({ openJoin }: { openJoin: () => void }) => {
           right: 0,
           zIndex: 100,
           background: navBg,
-          backdropFilter: scrolled ? "blur(14px)" : "none",
+          backdropFilter: "none",
           borderBottom: navBorder,
           transition:
             "background .4s ease, border-color .4s ease, backdrop-filter .4s ease",
@@ -454,8 +411,8 @@ const Nav = ({ openJoin }: { openJoin: () => void }) => {
             position: "fixed",
             inset: 0,
             zIndex: 99,
-            background: "rgba(12,12,12,.96)",
-            backdropFilter: "blur(10px)",
+            background: "rgba(12,12,12,.94)",
+            backdropFilter: "none",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -511,13 +468,7 @@ const Nav = ({ openJoin }: { openJoin: () => void }) => {
 const Hero = ({ openJoin }: { openJoin: () => void }) => {
   const { w } = useWindowSize();
   const isMobile = w < 768;
-  const [py, setPy] = useState(0);
-
-  useEffect(() => {
-    const onScroll = () => setPy(window.scrollY);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const py = 0; // Parallax disabled for performance
 
   return (
     <section
@@ -881,168 +832,167 @@ const vibes = [
   },
 ];
 
-const VibeGrid = ({
-  accent,
-  setAccent,
-}: {
-  accent: string;
-  setAccent: (color: string) => void;
-}) => {
-  const { w } = useWindowSize();
-  const isMobile = w < 768;
-  return (
-    <section
-      id="explore"
-      style={{
-        padding: isMobile ? "72px 20px" : "100px 64px",
-        background: C.bg,
-      }}
-    >
-      <div style={{ maxWidth: 1140, margin: "0 auto" }}>
-        <div className="ww-reveal" style={{ marginBottom: isMobile ? 36 : 52 }}>
-          <span
+const VibeGrid = memo(
+  ({
+    accent,
+    setAccent,
+  }: {
+    accent: string;
+    setAccent: (color: string) => void;
+  }) => {
+    const { w } = useWindowSize();
+    const isMobile = w < 768;
+
+    return (
+      <section
+        id="explore"
+        style={{
+          padding: isMobile ? "72px 20px" : "100px 64px",
+          background: C.bg,
+        }}
+      >
+        <div style={{ maxWidth: 1140, margin: "0 auto" }}>
+          <div
+            className="ww-reveal"
+            style={{ marginBottom: isMobile ? 36 : 52 }}
+          >
+            <span
+              style={{
+                fontFamily: "'Inter Tight',sans-serif",
+                fontSize: 11,
+                fontWeight: 600,
+                color: C.primary,
+                letterSpacing: ".22em",
+              }}
+            >
+              EXPLORE
+            </span>
+            <h2
+              style={{
+                fontFamily: "'Inter Tight',sans-serif",
+                fontSize: isMobile ? 36 : 52,
+                fontWeight: 900,
+                color: C.white,
+                marginTop: 8,
+                lineHeight: 1.05,
+              }}
+            >
+              Find your
+              <br />
+              <span style={{ color: accent }}>zone.</span>
+            </h2>
+          </div>
+          <div
             style={{
-              fontFamily: "'Inter Tight',sans-serif",
-              fontSize: 11,
-              fontWeight: 600,
-              color: C.primary,
-              letterSpacing: ".22em",
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr 1fr" : "1fr 1fr 1fr 1fr",
+              gap: isMobile ? 12 : 16,
             }}
           >
-            EXPLORE
-          </span>
-          <h2
-            style={{
-              fontFamily: "'Inter Tight',sans-serif",
-              fontSize: isMobile ? 36 : 52,
-              fontWeight: 900,
-              color: C.white,
-              marginTop: 8,
-              lineHeight: 1.05,
-            }}
-          >
-            Find your
-            <br />
-            <span style={{ color: accent }}>zone.</span>
-          </h2>
-        </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: isMobile ? "1fr 1fr" : "1fr 1fr 1fr 1fr",
-            gap: isMobile ? 12 : 16,
-          }}
-        >
-          {vibes.map((v, i) => {
-            const active = accent === v.color;
-            return (
-              <div
-                key={v.id}
-                className="ww-reveal"
-                style={{ animationDelay: `${i * 0.02}s` }}
-              >
-                <button
-                  onClick={() => setAccent(active ? C.primary : v.color)}
-                  style={{
-                    width: "100%",
-                    textAlign: "left",
-                    cursor: "pointer",
-                    backgroundImage:
-                      active && v.bgImage
+            {vibes.map((v, i) => {
+              const active = accent === v.color;
+              return (
+                <div
+                  key={v.id}
+                  className="ww-reveal"
+                  style={{ animationDelay: `${i * 0.01}s` }}
+                >
+                  <button
+                    onClick={() => setAccent(active ? C.primary : v.color)}
+                    style={{
+                      width: "100%",
+                      textAlign: "left",
+                      cursor: "pointer",
+                      backgroundImage: v.bgImage
                         ? `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${v.bgImage})`
                         : "none",
-                    backgroundColor:
-                      active && v.bgImage
-                        ? "transparent"
-                        : active
-                          ? v.bg
-                          : C.card,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    backgroundRepeat: "no-repeat",
-                    border: `1.5px solid ${active ? v.color : "rgba(255,255,255,.06)"}`,
-                    borderRadius: 20,
-                    padding: isMobile ? "22px 18px" : "32px 24px",
-                    transition: "all .35s cubic-bezier(.4,0,.2,1)",
-                    boxShadow: active ? `0 0 28px ${v.color}28` : "none",
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!active) {
-                      e.currentTarget.style.borderColor = `${v.color}60`;
-                      e.currentTarget.style.backgroundColor = `${v.color}08`;
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!active) {
-                      e.currentTarget.style.borderColor =
-                        "rgba(255,255,255,.06)";
-                      e.currentTarget.style.backgroundColor = "transparent";
-                    }
-                  }}
-                >
-                  <div
-                    style={{
-                      fontFamily: "'Inter Tight',sans-serif",
-                      fontSize: isMobile ? 14 : 16,
-                      fontWeight: 800,
-                      color: active ? v.color : C.white,
-                      letterSpacing: ".12em",
-                      transition: "color .3s",
+                      backgroundColor: v.bgImage ? "transparent" : C.card,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      backgroundRepeat: "no-repeat",
+                      border: `1.5px solid ${active ? v.color : "rgba(255,255,255,.06)"}`,
+                      borderRadius: 20,
+                      padding: isMobile ? "22px 18px" : "32px 24px",
+                      transition: "border .25s",
+                      boxShadow: active ? `0 0 28px ${v.color}28` : "none",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!active) {
+                        e.currentTarget.style.borderColor = `${v.color}60`;
+                        e.currentTarget.style.backgroundColor = `${v.color}08`;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!active) {
+                        e.currentTarget.style.borderColor =
+                          "rgba(255,255,255,.06)";
+                        e.currentTarget.style.backgroundColor = "transparent";
+                      }
                     }}
                   >
-                    {v.label}
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "'Tenor Sans',serif",
-                      fontSize: isMobile ? 11 : 12,
-                      color: C.slate,
-                      marginTop: 4,
-                    }}
-                  >
-                    {v.sub}
-                  </div>
-                  {/* bottom accent line */}
-                  <div
-                    style={{
-                      marginTop: isMobile ? 16 : 22,
-                      height: 2,
-                      borderRadius: 1,
-                      background: active ? v.color : "rgba(255,255,255,.08)",
-                      boxShadow: active ? `0 0 8px ${v.color}50` : "none",
-                      transition: "all .35s",
-                    }}
-                  />
-                </button>
-              </div>
-            );
-          })}
-        </div>
-        {/* stats grid closes */}
+                    <div
+                      style={{
+                        fontFamily: "'Inter Tight',sans-serif",
+                        fontSize: isMobile ? 14 : 16,
+                        fontWeight: 800,
+                        color: active ? v.color : C.white,
+                        letterSpacing: ".12em",
+                        transition: "color .3s",
+                      }}
+                    >
+                      {v.label}
+                    </div>
+                    <div
+                      style={{
+                        fontFamily: "'Tenor Sans',serif",
+                        fontSize: isMobile ? 11 : 12,
+                        color: C.slate,
+                        marginTop: 4,
+                      }}
+                    >
+                      {v.sub}
+                    </div>
+                    {/* bottom accent line */}
+                    <div
+                      style={{
+                        marginTop: isMobile ? 16 : 22,
+                        height: 2,
+                        borderRadius: 1,
+                        background: active ? v.color : "rgba(255,255,255,.08)",
+                        boxShadow: active ? `0 0 8px ${v.color}50` : "none",
+                        transition: "all .35s",
+                      }}
+                    />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+          {/* stats grid closes */}
 
-        {/* Gym Interior Photo */}
-        <div
-          className="ww-reveal"
-          style={{ animationDelay: ".3s", marginTop: isMobile ? 32 : 48 }}
-        >
-          <img
-            src="/media/gym-interior.webp"
-            alt="Workout Warehouse interior"
-            loading="lazy"
-            style={{
-              width: "100%",
-              borderRadius: 18,
-              display: "block",
-              maxHeight: 400,
-              objectFit: "cover",
-            }}
-          />
+          {/* Gym Interior Photo */}
+          <div
+            className="ww-reveal"
+            style={{ animationDelay: ".3s", marginTop: isMobile ? 32 : 48 }}
+          >
+            <img
+              src="/media/gym-interior.webp"
+              alt="Workout Warehouse interior"
+              style={{
+                width: "100%",
+                borderRadius: 18,
+                display: "block",
+                maxHeight: 400,
+                objectFit: "cover",
+              }}
+            />
+          </div>
         </div>
-      </div>
-      {/* container closes */}
-    </section>
-  );
-};
+        {/* container closes */}
+      </section>
+    );
+  },
+);
 
 /* ───────────────────────────────────────────
    WHY WORKOUT WAREHOUSE (editorial asymmetric)
@@ -1377,7 +1327,7 @@ const CoachCard = ({ coach, accent }: { coach: any; accent: string }) => {
   );
 };
 
-const CoachesSection = ({ accent }: { accent: string }) => {
+const CoachesSection = memo(({ accent }: { accent: string }) => {
   const { w } = useWindowSize();
   const isMobile = w < 768;
   const isTablet = w < 1024;
@@ -1385,7 +1335,7 @@ const CoachesSection = ({ accent }: { accent: string }) => {
 
   const scroll = (dir: number) => {
     if (scrollRef.current)
-      scrollRef.current.scrollBy({ left: dir * 300, behavior: "smooth" });
+      scrollRef.current.scrollBy({ left: dir * 300, behavior: "auto" });
   };
 
   return (
@@ -1503,7 +1453,6 @@ const CoachesSection = ({ accent }: { accent: string }) => {
           padding: "0 " + (isMobile ? "20px" : "64px"),
           paddingBottom: 24,
           scrollbarWidth: "none",
-          WebkitOverflowScrolling: "touch",
         }}
       >
         <style>{`::-webkit-scrollbar{display:none}`}</style>
@@ -1519,7 +1468,7 @@ const CoachesSection = ({ accent }: { accent: string }) => {
       </div>
     </section>
   );
-};
+});
 
 /* ───────────────────────────────────────────
    TESTIMONIALS
@@ -1826,7 +1775,7 @@ const classSchedule = [
   { time: "6:45 PM – 7:30 PM", mon: { name: "SPIN", coach: "LINNET" } },
 ];
 
-const PricingScheduleSection = ({ accent }: { accent: string }) => {
+const PricingScheduleSection = memo(({ accent }: { accent: string }) => {
   const [activeTab, setActiveTab] = useState("standard"); // "standard" | "student" | "classes"
   const { w } = useWindowSize();
   const isMobile = w < 768;
@@ -2591,7 +2540,7 @@ const PricingScheduleSection = ({ accent }: { accent: string }) => {
       </div>
     </section>
   );
-};
+});
 const CtaBand = ({
   openJoin,
   accent,
@@ -3208,7 +3157,7 @@ const addonOptions = [
   },
 ];
 
-const JoinModal = ({ onClose }: { onClose: () => void }) => {
+const JoinModal = memo(({ onClose }: { onClose: () => void }) => {
   const [step, setStep] = useState(0); // 0=intro, 1=membership, 2=addons, 3=confirm
   const [memberType, setMemberType] = useState("standard"); // "standard" or "student"
   const [selectedLevel, setSelectedLevel] = useState("3month");
@@ -4088,7 +4037,7 @@ const JoinModal = ({ onClose }: { onClose: () => void }) => {
       </div>
     </div>
   );
-};
+});
 
 /* ───────────────────────────────────────────
    ROOT APP
@@ -4097,13 +4046,13 @@ export default function WorkoutWarehouse() {
   const [joinOpen, setJoinOpen] = useState(false);
   const [accent, setAccent] = useState(C.primary);
 
-  useScrollReveal();
+  // Scroll reveal disabled for performance
 
   return (
     <>
       <GlobalStyles />
       <Grain />
-      <LoadingScreen />
+      {/* LoadingScreen removed for instant display */}
 
       <Nav openJoin={() => setJoinOpen(true)} />
       <Hero openJoin={() => setJoinOpen(true)} />

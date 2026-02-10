@@ -50,6 +50,27 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Critical inline styles — prevent FOUC (Flash of Unstyled Content) */}
+        <style>{`
+          *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+          html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+          body{background:#0c0c0c;color:#ececec;overflow-x:hidden}
+          ::selection{background:rgba(204,255,0,0.25);color:#fff}
+          img{display:block;max-width:100%}
+          button{-webkit-tap-highlight-color:transparent}
+          .ww-grain{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.04}
+          .ww-reveal{opacity:1 !important;transform:translateY(0) !important;transition:none !important}
+          @keyframes ticker-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+          .ww-ticker-track{display:flex;white-space:nowrap;animation:ticker-scroll 28s linear infinite}
+          @keyframes ww-pulse{0%,100%{opacity:.55;transform:scale(.96)}50%{opacity:1;transform:scale(1.04)}}
+          @keyframes ww-heartbeat{0%,100%{transform:scaleY(1);opacity:.5}50%{transform:scaleY(1.7);opacity:1}}
+          @keyframes ww-fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+          @keyframes ww-slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+          @keyframes ww-fadeIn{from{opacity:0}to{opacity:1}}
+          ::-webkit-scrollbar{width:6px}
+          ::-webkit-scrollbar-track{background:#0c0c0c}
+          ::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:3px}
+        `}</style>
         {/* Preload critical fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -58,12 +79,15 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Tenor+Sans&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800;900&family=Tenor+Sans&display=swap"
           rel="stylesheet"
         />
 
         {/* Preload hero poster image */}
         <link rel="preload" as="image" href="/media/hero-poster.png" />
+
+        {/* Preload first vibe image */}
+        <link rel="preload" as="image" href="/media/vibe-strength.webp" />
 
         {/* Dynamic title script — updates <title> based on server time */}
         <script
