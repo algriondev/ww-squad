@@ -84,7 +84,7 @@ export default function RootLayout({
         />
 
         {/* Preload hero poster image */}
-        <link rel="preload" as="image" href="/media/hero-poster.png" />
+        <link rel="preload" as="image" href="/media/hero-poster.webp" />
 
         {/* Preload first vibe image */}
         <link rel="preload" as="image" href="/media/vibe-strength.webp" />

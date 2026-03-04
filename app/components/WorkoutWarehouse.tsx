@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback, memo } from "react";
+import { useState, useEffect, useRef, useCallback, memo, lazy, Suspense } from "react";
 
 /* ───────────────────────────────────────────
    DESIGN TOKENS — WORKOUT WAREHOUSE REBRAND
@@ -353,6 +353,8 @@ const Nav = ({ openJoin }: { openJoin: () => void }) => {
         {isMobile && (
           <button
             onClick={() => setMenuOpen(!menuOpen)}
+            aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={menuOpen}
             style={{
               background: "none",
               border: "none",
@@ -489,7 +491,7 @@ const Hero = ({ openJoin }: { openJoin: () => void }) => {
         loop
         playsInline
         preload="none"
-        poster="/media/hero-poster.png"
+        poster="/media/hero-poster.webp"
         style={{
           position: "absolute",
           inset: 0,
@@ -500,6 +502,12 @@ const Hero = ({ openJoin }: { openJoin: () => void }) => {
         }}
       >
         <source src="/media/hero.mp4" type="video/mp4" />
+        <track
+          kind="captions"
+          src="/media/hero-captions.vtt"
+          srcLang="en"
+          label="English captions"
+        />
         Your browser does not support the video tag.
       </video>
 
@@ -899,6 +907,8 @@ const VibeGrid = memo(
                 >
                   <button
                     onClick={() => setAccent(active ? C.primary : v.color)}
+                    aria-label={`Select ${v.label} training zone`}
+                    aria-pressed={active}
                     style={{
                       width: "100%",
                       textAlign: "left",
@@ -946,7 +956,7 @@ const VibeGrid = memo(
                       style={{
                         fontFamily: "'Tenor Sans',serif",
                         fontSize: isMobile ? 11 : 12,
-                        color: C.slate,
+                        color: "#9ca3af",
                         marginTop: 4,
                       }}
                     >
@@ -978,6 +988,9 @@ const VibeGrid = memo(
             <img
               src="/media/gym-interior.webp"
               alt="Workout Warehouse interior"
+              loading="lazy"
+              width="651"
+              height="488"
               style={{
                 width: "100%",
                 borderRadius: 18,
@@ -1248,7 +1261,10 @@ const CoachCard = ({ coach, accent }: { coach: any; accent: string }) => {
       >
         <img
           src={coach.img}
-          alt={coach.name}
+          alt={`${coach.name}, ${coach.role} coach`}
+          loading="lazy"
+          width="280"
+          height="280"
           style={{
             width: "100%",
             height: "100%",
@@ -1657,10 +1673,14 @@ const Testimonials = ({ accent }: { accent: string }) => {
             <button
               key={i}
               onClick={() => setIdx(i)}
+              aria-label={`View testimonial ${i + 1} of ${testimonials.length}`}
               style={{
-                width: i === idx ? 28 : 10,
-                height: 10,
+                width: i === idx ? 28 : 12,
+                height: 12,
                 borderRadius: 5,
+                minWidth: 44,
+                minHeight: 44,
+                padding: 0,
                 background: i === idx ? accent : "rgba(255,255,255,.12)",
                 border: "none",
                 cursor: "pointer",
@@ -1855,6 +1875,8 @@ const PricingScheduleSection = memo(({ accent }: { accent: string }) => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
+              aria-label={`View ${tab.label.toLowerCase()}`}
+              aria-pressed={activeTab === tab.id}
               style={{
                 padding: isMobile ? "12px 20px" : "14px 28px",
                 background: activeTab === tab.id ? accent : "transparent",
@@ -2804,7 +2826,7 @@ const Footer = () => {
                     transition: "color .2s",
                   }}
                   onMouseEnter={(e) => (e.currentTarget.style.color = C.white)}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = C.slate)}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "#9ca3af")}
                 >
                   {item}
                 </div>
@@ -3157,887 +3179,28 @@ const addonOptions = [
   },
 ];
 
-const JoinModal = memo(({ onClose }: { onClose: () => void }) => {
-  const [step, setStep] = useState(0); // 0=intro, 1=membership, 2=addons, 3=confirm
-  const [memberType, setMemberType] = useState("standard"); // "standard" or "student"
-  const [selectedLevel, setSelectedLevel] = useState("3month");
-  const [addons, setAddons] = useState<string[]>([]);
-  const [confirmed, setConfirmed] = useState(false);
-  const [introOpacity, setIntroOpacity] = useState(1);
-  const { w } = useWindowSize();
-  const isMobile = w < 768;
+// Lazy load the JoinModal component for better performance
+const LazyJoinModal = lazy(() => import("./JoinModal"));
 
-  useEffect(() => {
-    if (step === 0) {
-      const t1 = setTimeout(() => setIntroOpacity(0), 2100);
-      const t2 = setTimeout(() => setStep(1), 2800);
-      return () => {
-        clearTimeout(t1);
-        clearTimeout(t2);
-      };
+const JoinModalWithSuspense = ({ onClose }: { onClose: () => void }) => (
+  <Suspense
+    fallback={
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          background: C.bg,
+          zIndex: 500,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      />
     }
-  }, [step]);
-
-  const toggleAddon = (id: string) =>
-    setAddons((p: string[]) =>
-      p.includes(id) ? p.filter((a) => a !== id) : [...p, id],
-    );
-
-  // Get the right pricing array based on member type
-  const levels = memberType === "student" ? studentLevels : membershipLevels;
-  const selectedTier = levels.find((l) => l.id === selectedLevel);
-  const basePrice = selectedTier?.price || 0;
-  const addonTotal = addons.reduce(
-    (s, a) => s + (addonOptions.find((o) => o.id === a)?.price || 0),
-    0,
-  );
-  const total = basePrice + addonTotal;
-
-  const btnStyle = (color = C.primary) => ({
-    width: "100%",
-    padding: "15px",
-    background: color,
-    border: "none",
-    borderRadius: 50,
-    fontFamily: "'Inter Tight',sans-serif",
-    fontSize: 13,
-    fontWeight: 800,
-    color: C.bg,
-    letterSpacing: ".16em",
-    cursor: "pointer",
-    boxShadow: `0 5px 28px ${color}45`,
-    transition: "transform .15s,box-shadow .15s",
-  });
-
-  // ── INTRO PULSE ──
-  if (step === 0)
-    return (
-      <div
-        style={{
-          position: "fixed",
-          inset: 0,
-          zIndex: 500,
-          background: C.bg,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          opacity: introOpacity,
-          transition: "opacity 1s ease",
-        }}
-      >
-        <div
-          style={{
-            fontFamily: "'Inter Tight',sans-serif",
-            fontSize: 52,
-            fontWeight: 900,
-            color: C.primary,
-            letterSpacing: "-.01em",
-            animation: "ww-pulse 1.4s ease infinite",
-            textShadow: `0 0 40px ${C.primaryGlow}`,
-          }}
-        >
-          WORKOUT
-        </div>
-        <div
-          style={{
-            fontFamily: "'Inter Tight',sans-serif",
-            fontSize: 52,
-            fontWeight: 800,
-            color: C.white,
-            letterSpacing: ".18em",
-            animation: "ww-pulse 1.4s ease .2s infinite",
-          }}
-        >
-          WAREHOUSE
-        </div>
-        <div
-          style={{
-            marginTop: 22,
-            width: 3,
-            height: 36,
-            background: C.primary,
-            borderRadius: 2,
-            animation: "ww-heartbeat 1.4s ease infinite",
-            boxShadow: `0 0 14px ${C.primary}`,
-          }}
-        />
-      </div>
-    );
-
-  // ── CONFIRMED ──
-  if (confirmed)
-    return (
-      <div
-        style={{
-          position: "fixed",
-          inset: 0,
-          zIndex: 500,
-          background: C.bg,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: 40,
-        }}
-      >
-        <div
-          style={{
-            width: 88,
-            height: 88,
-            borderRadius: "50%",
-            background: `${C.primary}12`,
-            border: `2.5px solid ${C.primary}`,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            boxShadow: `0 0 50px ${C.primaryGlow}`,
-            marginBottom: 28,
-          }}
-        >
-          <span style={{ fontSize: 40, color: C.primary }}>✓</span>
-        </div>
-        <h2
-          style={{
-            fontFamily: "'Inter Tight',sans-serif",
-            fontSize: isMobile ? 28 : 34,
-            fontWeight: 900,
-            color: C.white,
-            textAlign: "center",
-            lineHeight: 1.15,
-          }}
-        >
-          WELCOME TO
-          <br />
-          <span style={{ color: C.primary }}>WORKOUT WAREHOUSE</span>
-        </h2>
-        <p
-          style={{
-            fontFamily: "'Tenor Sans',serif",
-            fontSize: 15,
-            color: C.slate,
-            marginTop: 14,
-            textAlign: "center",
-            lineHeight: 1.6,
-            maxWidth: 360,
-          }}
-        >
-          Your {selectedTier?.label} membership is confirmed. Let's go.
-        </p>
-        <button
-          onClick={onClose}
-          style={{ ...btnStyle(), marginTop: 36, maxWidth: 280 }}
-          onMouseDown={(e) => (e.currentTarget.style.transform = "scale(.96)")}
-          onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-        >
-          BACK TO HOME
-        </button>
-      </div>
-    );
-
-  // ── MAIN FLOW (steps 1-3) ──
-  return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 500,
-        background: C.bg,
-        overflowY: "auto",
-        animation: "ww-slideUp .38s cubic-bezier(.4,0,.2,1)",
-      }}
-    >
-      {/* Header */}
-      <div
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 2,
-          background: C.bg,
-          padding: isMobile ? "16px 22px 12px" : "20px 40px 14px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <div style={{ display: "flex", gap: 6 }}>
-          {[1, 2, 3].map((s) => (
-            <div
-              key={s}
-              style={{
-                width: s < step ? 30 : 8,
-                height: 3,
-                borderRadius: 2,
-                background: s < step ? C.primary : "rgba(255,255,255,.1)",
-                transition: "width .4s ease,background .4s ease",
-                boxShadow: s < step ? `0 0 7px ${C.primary}50` : "none",
-              }}
-            />
-          ))}
-        </div>
-        <button
-          onClick={onClose}
-          style={{
-            background: "none",
-            border: "none",
-            color: C.slate,
-            fontSize: 22,
-            cursor: "pointer",
-            lineHeight: 1,
-            padding: "2px 6px",
-            transition: "color .2s",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = C.white)}
-          onMouseLeave={(e) => (e.currentTarget.style.color = C.slate)}
-        >
-          ✕
-        </button>
-      </div>
-
-      <div style={{ padding: `12px ${isMobile ? "22px" : "40px"} 100px` }}>
-        {/* ── STEP 1: MEMBERSHIP SELECTION (with student toggle) ── */}
-        {step === 1 && (
-          <div
-            style={{
-              animation: "ww-fadeUp .45s ease",
-              maxWidth: 580,
-              margin: "0 auto",
-            }}
-          >
-            <div
-              style={{
-                fontFamily: "'Inter Tight',sans-serif",
-                fontSize: 11,
-                fontWeight: 600,
-                color: C.primary,
-                letterSpacing: ".2em",
-              }}
-            >
-              STEP 01 · SELECT MEMBERSHIP
-            </div>
-            <h3
-              style={{
-                fontFamily: "'Inter Tight',sans-serif",
-                fontSize: isMobile ? 28 : 34,
-                fontWeight: 900,
-                color: C.white,
-                marginTop: 10,
-                lineHeight: 1.1,
-              }}
-            >
-              Choose your
-              <br />
-              <span style={{ color: C.primary }}>plan.</span>
-            </h3>
-
-            {/* Member Type Toggle */}
-            <div
-              style={{
-                marginTop: 24,
-                display: "flex",
-                gap: 8,
-                background: C.card,
-                padding: 6,
-                borderRadius: 50,
-                border: "1px solid rgba(255,255,255,.06)",
-              }}
-            >
-              {[
-                { id: "standard", label: "STANDARD" },
-                { id: "student", label: "STUDENT" },
-              ].map((t) => (
-                <button
-                  key={t.id}
-                  onClick={() => {
-                    setMemberType(t.id);
-                    setSelectedLevel(
-                      t.id === "student" ? "student-peak" : "3month",
-                    );
-                  }}
-                  style={{
-                    flex: 1,
-                    padding: "10px",
-                    background: memberType === t.id ? C.primary : "transparent",
-                    border: "none",
-                    borderRadius: 50,
-                    fontFamily: "'Inter Tight',sans-serif",
-                    fontSize: 11,
-                    fontWeight: 800,
-                    color: memberType === t.id ? C.bg : C.slateL,
-                    letterSpacing: ".14em",
-                    cursor: "pointer",
-                    transition: "all .25s",
-                    boxShadow:
-                      memberType === t.id
-                        ? `0 0 12px ${C.primaryGlow}`
-                        : "none",
-                  }}
-                >
-                  {t.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Pricing Cards */}
-            <div
-              key={memberType}
-              style={{
-                marginTop: 24,
-                display: "flex",
-                flexDirection: "column",
-                gap: 12,
-                animation: "ww-fadeIn .3s ease",
-              }}
-            >
-              {levels.map((lvl) => {
-                const active = selectedLevel === lvl.id;
-                const isMonthly =
-                  lvl.id === "monthly" || lvl.id.startsWith("student");
-                const priceLabel = isMonthly ? "/mo" : " total";
-                return (
-                  <button
-                    key={lvl.id}
-                    onClick={() => setSelectedLevel(lvl.id)}
-                    style={{
-                      background: active ? `${lvl.color}0d` : C.card,
-                      border: `1.5px solid ${active ? lvl.color : "rgba(255,255,255,.07)"}`,
-                      borderRadius: 18,
-                      padding: "18px 20px",
-                      cursor: "pointer",
-                      textAlign: "left",
-                      transition: "all .3s cubic-bezier(.4,0,.2,1)",
-                      boxShadow: active ? `0 0 24px ${lvl.color}22` : "none",
-                      position: "relative",
-                    }}
-                  >
-                    {(lvl as any).popular && (
-                      <span
-                        style={{
-                          position: "absolute",
-                          top: -11,
-                          right: 18,
-                          fontFamily: "'Inter Tight',sans-serif",
-                          fontSize: 9,
-                          fontWeight: 800,
-                          color: C.bg,
-                          background: C.primary,
-                          padding: "3px 12px",
-                          borderRadius: 50,
-                          letterSpacing: ".14em",
-                          boxShadow: `0 2px 12px ${C.primaryGlow}`,
-                        }}
-                      >
-                        MOST POPULAR
-                      </span>
-                    )}
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "flex-start",
-                      }}
-                    >
-                      <div>
-                        <div
-                          style={{
-                            fontFamily: "'Inter Tight',sans-serif",
-                            fontSize: 17,
-                            fontWeight: 800,
-                            color: active ? lvl.color : C.white,
-                            letterSpacing: ".1em",
-                            transition: "color .3s",
-                          }}
-                        >
-                          {lvl.label}
-                        </div>
-                        <div
-                          style={{
-                            fontFamily: "'Tenor Sans',serif",
-                            fontSize: 12,
-                            color: C.slate,
-                            marginTop: 2,
-                          }}
-                        >
-                          {lvl.sub}
-                        </div>
-                        {(lvl as any).firstMonth && (
-                          <div
-                            style={{
-                              fontFamily: "'Tenor Sans',serif",
-                              fontSize: 11,
-                              color: C.yellow,
-                              marginTop: 4,
-                            }}
-                          >
-                            KSh {(lvl as any).firstMonth.toLocaleString()} first
-                            month
-                          </div>
-                        )}
-                      </div>
-                      <div style={{ textAlign: "right" }}>
-                        <span
-                          style={{
-                            fontFamily: "'Inter Tight',sans-serif",
-                            fontSize: 24,
-                            fontWeight: 900,
-                            color: active ? lvl.color : C.white,
-                          }}
-                        >
-                          KSh {lvl.price.toLocaleString()}
-                        </span>
-                        <span
-                          style={{
-                            fontFamily: "'Tenor Sans',serif",
-                            fontSize: 11,
-                            color: C.slate,
-                          }}
-                        >
-                          {priceLabel}
-                        </span>
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        marginTop: 14,
-                        display: "flex",
-                        flexWrap: "wrap",
-                        gap: 7,
-                      }}
-                    >
-                      {lvl.perks.map((p) => (
-                        <span
-                          key={p}
-                          style={{
-                            fontFamily: "'Inter Tight',sans-serif",
-                            fontSize: 9.5,
-                            fontWeight: 600,
-                            color: active ? lvl.color : C.slateL,
-                            background: active
-                              ? `${lvl.color}12`
-                              : "rgba(255,255,255,.06)",
-                            padding: "5px 10px",
-                            borderRadius: 7,
-                            letterSpacing: ".07em",
-                            transition: "all .3s",
-                          }}
-                        >
-                          {p}
-                        </span>
-                      ))}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-
-            <button
-              onClick={() => setStep(2)}
-              style={{ ...btnStyle(), marginTop: 26 }}
-              onMouseDown={(e) =>
-                (e.currentTarget.style.transform = "scale(.96)")
-              }
-              onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-            >
-              CONTINUE →
-            </button>
-
-            {/* Corporate note */}
-            <div
-              style={{
-                marginTop: 16,
-                textAlign: "center",
-                fontFamily: "'Tenor Sans',serif",
-                fontSize: 12,
-                color: C.slate,
-              }}
-            >
-              Corporate memberships?{" "}
-              <a
-                href={WA_URL}
-                target="_blank"
-                rel="noopener"
-                style={{ color: C.primary, textDecoration: "none" }}
-              >
-                Contact us on WhatsApp
-              </a>
-            </div>
-          </div>
-        )}
-
-        {/* ── STEP 2: ADD-ONS ── */}
-        {step === 2 && (
-          <div
-            style={{
-              animation: "ww-fadeUp .45s ease",
-              maxWidth: 520,
-              margin: "0 auto",
-            }}
-          >
-            <div
-              style={{
-                fontFamily: "'Inter Tight',sans-serif",
-                fontSize: 11,
-                fontWeight: 600,
-                color: C.primary,
-                letterSpacing: ".2em",
-              }}
-            >
-              STEP 02 · ENHANCE YOUR PLAN
-            </div>
-            <h3
-              style={{
-                fontFamily: "'Inter Tight',sans-serif",
-                fontSize: isMobile ? 28 : 34,
-                fontWeight: 900,
-                color: C.white,
-                marginTop: 10,
-                lineHeight: 1.1,
-              }}
-            >
-              Add-ons
-              <br />
-              <span style={{ color: C.primary }}>(optional).</span>
-            </h3>
-            <p
-              style={{
-                fontFamily: "'Tenor Sans',serif",
-                fontSize: 13,
-                color: C.slate,
-                marginTop: 8,
-              }}
-            >
-              Boost your membership with recovery & wellness.
-            </p>
-
-            <div
-              style={{
-                marginTop: 22,
-                display: "flex",
-                flexDirection: "column",
-                gap: 10,
-              }}
-            >
-              {addonOptions.map((addon) => {
-                const active = addons.includes(addon.id as string);
-                return (
-                  <button
-                    key={addon.id}
-                    onClick={() => toggleAddon(addon.id)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      background: active ? `${C.primary}0a` : C.card,
-                      border: `1.5px solid ${active ? C.primary : "rgba(255,255,255,.07)"}`,
-                      borderRadius: 16,
-                      padding: "15px 18px",
-                      cursor: "pointer",
-                      transition: "all .25s ease",
-                      boxShadow: active ? `0 0 16px ${C.primaryGlow}` : "none",
-                    }}
-                  >
-                    <div
-                      style={{ display: "flex", alignItems: "center", gap: 14 }}
-                    >
-                      <span style={{ fontSize: 22 }}>{addon.icon}</span>
-                      <div style={{ textAlign: "left" }}>
-                        <div
-                          style={{
-                            fontFamily: "'Inter Tight',sans-serif",
-                            fontSize: 14,
-                            fontWeight: 700,
-                            color: active ? C.primary : C.white,
-                            transition: "color .25s",
-                          }}
-                        >
-                          {addon.label}
-                        </div>
-                        <div
-                          style={{
-                            fontFamily: "'Tenor Sans',serif",
-                            fontSize: 11,
-                            color: C.slate,
-                            marginTop: 2,
-                          }}
-                        >
-                          +KSh {addon.price.toLocaleString()}
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        width: 30,
-                        height: 30,
-                        borderRadius: "50%",
-                        flexShrink: 0,
-                        background: active ? C.primary : "transparent",
-                        border: `2px solid ${active ? C.primary : "rgba(255,255,255,.2)"}`,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        transition: "all .25s ease",
-                        boxShadow: active
-                          ? `0 0 10px ${C.primaryGlow}`
-                          : "none",
-                      }}
-                    >
-                      <span
-                        style={{
-                          color: active ? C.bg : C.slate,
-                          fontWeight: 800,
-                          fontSize: active ? 15 : 17,
-                        }}
-                      >
-                        {active ? "✓" : "+"}
-                      </span>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-
-            <button
-              onClick={() => setStep(3)}
-              style={{ ...btnStyle(), marginTop: 26 }}
-              onMouseDown={(e) =>
-                (e.currentTarget.style.transform = "scale(.96)")
-              }
-              onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-            >
-              REVIEW ORDER →
-            </button>
-          </div>
-        )}
-
-        {/* ── STEP 3: CONFIRM ── */}
-        {step === 3 && (
-          <div
-            style={{
-              animation: "ww-fadeUp .45s ease",
-              maxWidth: 520,
-              margin: "0 auto",
-            }}
-          >
-            <div
-              style={{
-                fontFamily: "'Inter Tight',sans-serif",
-                fontSize: 11,
-                fontWeight: 600,
-                color: C.primary,
-                letterSpacing: ".2em",
-              }}
-            >
-              STEP 03 · REVIEW
-            </div>
-            <h3
-              style={{
-                fontFamily: "'Inter Tight',sans-serif",
-                fontSize: isMobile ? 28 : 34,
-                fontWeight: 900,
-                color: C.white,
-                marginTop: 10,
-                lineHeight: 1.1,
-              }}
-            >
-              Your
-              <br />
-              <span style={{ color: C.primary }}>summary.</span>
-            </h3>
-
-            <div
-              style={{
-                marginTop: 24,
-                background: C.card,
-                borderRadius: 22,
-                border: "1px solid rgba(255,255,255,.07)",
-                overflow: "hidden",
-              }}
-            >
-              <div
-                style={{
-                  padding: "16px 20px",
-                  borderBottom: "1px solid rgba(255,255,255,.06)",
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: "'Inter Tight',sans-serif",
-                    fontSize: 13,
-                    fontWeight: 700,
-                    color: C.white,
-                  }}
-                >
-                  Membership Type
-                </div>
-                <div
-                  style={{
-                    fontFamily: "'Tenor Sans',serif",
-                    fontSize: 12,
-                    color: C.slate,
-                  }}
-                >
-                  {memberType === "student" ? "Student" : "Standard"}
-                </div>
-              </div>
-              <div
-                style={{
-                  padding: "16px 20px",
-                  borderBottom: "1px solid rgba(255,255,255,.06)",
-                }}
-              >
-                <div
-                  style={{ display: "flex", justifyContent: "space-between" }}
-                >
-                  <div>
-                    <div
-                      style={{
-                        fontFamily: "'Inter Tight',sans-serif",
-                        fontSize: 13,
-                        fontWeight: 700,
-                        color: C.white,
-                      }}
-                    >
-                      {selectedTier?.label}
-                    </div>
-                    <div
-                      style={{
-                        fontFamily: "'Tenor Sans',serif",
-                        fontSize: 12,
-                        color: C.slate,
-                      }}
-                    >
-                      {selectedTier?.sub}
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "'Inter Tight',sans-serif",
-                      fontSize: 13,
-                      color: C.slateL,
-                    }}
-                  >
-                    KSh {basePrice.toLocaleString()}
-                  </div>
-                </div>
-              </div>
-              {addons.length > 0 && (
-                <div
-                  style={{
-                    padding: "16px 20px",
-                    borderBottom: "1px solid rgba(255,255,255,.06)",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontFamily: "'Inter Tight',sans-serif",
-                      fontSize: 12,
-                      fontWeight: 600,
-                      color: C.slateL,
-                      marginBottom: 10,
-                    }}
-                  >
-                    ADD-ONS
-                  </div>
-                  {addons.map((id) => {
-                    const a = addonOptions.find((o) => o.id === id);
-                    return (
-                      <div
-                        key={id}
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          padding: "4px 0",
-                        }}
-                      >
-                        <span
-                          style={{
-                            fontFamily: "'Tenor Sans',serif",
-                            fontSize: 13,
-                            color: C.slateL,
-                          }}
-                        >
-                          {a?.icon} {a?.label}
-                        </span>
-                        <span
-                          style={{
-                            fontFamily: "'Inter Tight',sans-serif",
-                            fontSize: 13,
-                            fontWeight: 600,
-                            color: C.slateL,
-                          }}
-                        >
-                          KSh {a && a.price ? a.price.toLocaleString() : "0"}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-              <div style={{ padding: "20px", background: `${C.primary}06` }}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "baseline",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontFamily: "'Inter Tight',sans-serif",
-                      fontSize: 14,
-                      fontWeight: 700,
-                      color: C.white,
-                      letterSpacing: ".1em",
-                    }}
-                  >
-                    TOTAL
-                  </span>
-                  <span
-                    style={{
-                      fontFamily: "'Inter Tight',sans-serif",
-                      fontSize: 32,
-                      fontWeight: 900,
-                      color: C.primary,
-                    }}
-                  >
-                    KSh {total.toLocaleString()}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setConfirmed(true)}
-              style={{
-                ...btnStyle(),
-                marginTop: 26,
-                padding: "17px",
-                fontSize: 15,
-              }}
-              onMouseDown={(e) =>
-                (e.currentTarget.style.transform = "scale(.96)")
-              }
-              onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-            >
-              JOIN WORKOUT WAREHOUSE
-            </button>
-            <div
-              style={{
-                textAlign: "center",
-                marginTop: 16,
-                fontFamily: "'Tenor Sans',serif",
-                fontSize: 12,
-                color: C.slate,
-              }}
-            >
-              Cancel anytime · No hidden fees
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-});
+  >
+    <LazyJoinModal onClose={onClose} />
+  </Suspense>
+);
 
 /* ───────────────────────────────────────────
    ROOT APP
@@ -4068,7 +3231,8 @@ export default function WorkoutWarehouse() {
       <FAB openJoin={() => setJoinOpen(true)} accent={accent} />
       <WhatsAppBubble />
 
-      {joinOpen && <JoinModal onClose={() => setJoinOpen(false)} />}
+      {joinOpen && <JoinModalWithSuspense onClose={() => setJoinOpen(false)} />}
     </>
   );
 }
+
