@@ -215,6 +215,115 @@ const Ticker = () => (
   </div>
 );
 
+const CurrentOffers = memo(() => {
+  const { w } = useWindowSize();
+  const isMobile = w < 768;
+  return (
+    <section
+      style={{
+        padding: isMobile ? "40px 20px" : "50px 64px",
+        background: C.card,
+        color: C.white,
+      }}
+    >
+      <div style={{ maxWidth: 1140, margin: "0 auto", textAlign: "center" }}>
+        <h2
+          style={{
+            fontFamily: "'Inter Tight',sans-serif",
+            fontSize: isMobile ? 28 : 36,
+            fontWeight: 900,
+            marginBottom: isMobile ? 16 : 24,
+          }}
+        >
+          Current Offers
+        </h2>
+        <p
+          style={{
+            fontFamily: "'Inter Tight',sans-serif",
+            fontSize: isMobile ? 14 : 16,
+            color: C.slateL,
+            maxWidth: 720,
+            margin: "0 auto",
+            lineHeight: 1.5,
+          }}
+        >
+          Catch our latest promotions and limited-time deals here – from
+          half-price first month to free recovery sessions. This section is
+          easy to update in code or hooked to a CMS later.
+        </p>
+      </div>
+    </section>
+  );
+});
+
+const FaqSection = memo(() => {
+  const { w } = useWindowSize();
+  const isMobile = w < 768;
+  const faqs = [
+    {
+      q: "What are your opening hours?",
+      a: "We're open 24/7 – training whenever you are.",
+    },
+    {
+      q: "How can I cancel or freeze my membership?",
+      a: "Log into your account or contact support 30 days prior to billing.",
+    },
+    {
+      q: "Do you offer student discounts?",
+      a: "Yes, we have reduced rates for students. See the pricing tab above.",
+    },
+  ];
+  return (
+    <section
+      id="faq"
+      style={{
+        padding: isMobile ? "40px 20px" : "50px 64px",
+        background: C.bg,
+        color: C.white,
+      }}
+    >
+      <div style={{ maxWidth: 800, margin: "0 auto" }}>
+        <h2
+          style={{
+            fontFamily: "'Inter Tight',sans-serif",
+            fontSize: isMobile ? 28 : 36,
+            fontWeight: 900,
+            textAlign: "center",
+            marginBottom: isMobile ? 24 : 32,
+          }}
+        >
+          Frequently Asked Questions
+        </h2>
+        <dl>
+          {faqs.map((item, i) => (
+            <div key={i} style={{ marginBottom: isMobile ? 16 : 24 }}>
+              <dt
+                style={{
+                  fontFamily: "'Inter Tight',sans-serif",
+                  fontSize: isMobile ? 16 : 18,
+                  fontWeight: 700,
+                }}
+              >
+                {item.q}
+              </dt>
+              <dd
+                style={{
+                  fontFamily: "'Inter Tight',sans-serif",
+                  fontSize: isMobile ? 14 : 16,
+                  color: C.slateL,
+                  marginTop: 4,
+                }}
+              >
+                {item.a}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+  );
+});
+
 /* ───────────────────────────────────────────
    NAV
 ─────────────────────────────────────────── */
@@ -257,39 +366,18 @@ const Nav = ({ openJoin }: { openJoin: () => void }) => {
         }}
       >
         {/* Logo */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "baseline",
-            gap: 3,
-            cursor: "pointer",
-          }}
+        <img
+          src="/media/ww-logo.webp"
+          alt="Workout Warehouse logo"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        >
-          <span
-            style={{
-              fontFamily: "'Inter Tight',sans-serif",
-              fontSize: isMobile ? 20 : 24,
-              fontWeight: 900,
-              color: C.primary,
-              letterSpacing: "-.01em",
-              textShadow: `0 0 18px ${C.primaryGlow}`,
-            }}
-          >
-            WORKOUT
-          </span>
-          <span
-            style={{
-              fontFamily: "'Inter Tight',sans-serif",
-              fontSize: isMobile ? 20 : 24,
-              fontWeight: 800,
-              color: C.white,
-              letterSpacing: ".16em",
-            }}
-          >
-            WAREHOUSE
-          </span>
-        </div>
+          style={{
+            height: isMobile ? 48 : 64,
+            cursor: "pointer",
+            transition: "opacity .3s",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.8")}
+          onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+        />
 
         {/* Desktop links */}
         {!isMobile && (
@@ -694,7 +782,7 @@ const Hero = ({ openJoin }: { openJoin: () => void }) => {
             maxWidth: 420,
           }}
         >
-          THE END OF AVERAGE.
+          Fitness&nbsp;|&nbsp;Wellness&nbsp;|&nbsp;Lifestyle
         </p>
         <div
           style={{
@@ -855,7 +943,7 @@ const VibeGrid = memo(
       <section
         id="explore"
         style={{
-          padding: isMobile ? "72px 20px" : "100px 64px",
+          padding: isMobile ? "48px 20px" : "60px 64px",
           background: C.bg,
         }}
       >
@@ -1025,7 +1113,7 @@ const WhySection = ({ accent }: { accent: string }) => {
   return (
     <section
       style={{
-        padding: isMobile ? "72px 20px" : "120px 64px",
+        padding: isMobile ? "48px 20px" : "70px 64px",
         background: C.bg,
         position: "relative",
         overflow: "hidden",
@@ -1112,8 +1200,114 @@ const WhySection = ({ accent }: { accent: string }) => {
           </p>
         </div>
 
-        {/* Right: stats grid */}
-        <div className="ww-reveal" style={{ animationDelay: ".12s" }}>
+        {/* Right: fitness image */}
+        <div
+          className="ww-reveal"
+          style={{ animationDelay: ".12s", marginTop: isMobile ? 32 : 0 }}
+        >
+          <img
+            src="/media/fitness.webp"
+            alt="Fitness training at Workout Warehouse"
+            loading="lazy"
+            width="651"
+            height="488"
+            style={{
+              width: "100%",
+              borderRadius: 18,
+              display: "block",
+              maxHeight: 400,
+              objectFit: "cover",
+            }}
+          />
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/* ───────────────────────────────────────────
+   COACHES
+─────────────────────────────────────────── */
+const coaches = [
+  {
+    name: "SARAH K.",
+    role: "HIIT & Conditioning",
+    base: "Highway Mall",
+    img: "/media/coach-sarah.webp",
+    classes: 847,
+    rating: 4.9,
+  },
+  {
+    name: "ALEX M.",
+    role: "Strength & Power",
+    base: "Highway Mall",
+    img: "/media/coach-alex.webp",
+    classes: 612,
+    rating: 4.8,
+  },
+  {
+    name: "VINNY.",
+    role: "Zen & Flow",
+    base: "Highway Mall",
+    img: "/media/coach-luna.webp",
+    classes: 1204,
+    rating: 5.0,
+  },
+  {
+    name: "JAKE T.",
+    role: "Cardio & Endurance",
+    base: "Highway Mall",
+    img: "/media/coach-jake.webp",
+    classes: 538,
+    rating: 4.7,
+  },
+  {
+    name: "MIA S.",
+    role: "Recovery & Mobility",
+    base: "Highway Mall",
+    img: "/media/coach-mia.webp",
+    classes: 423,
+    rating: 4.9,
+  },
+];
+
+/* ───────────────────────────────────────────
+   SQUAD STATS
+─────────────────────────────────────────── */
+const squadStats = [
+  { num: "412", label: "Training Right Now" },
+  { num: "98%", label: "Peak Performance" },
+  { num: "Open", label: "Daily" },
+  { num: "12+", label: "Live Classes Daily" },
+];
+
+const StatsSection = ({ accent }: { accent: string }) => {
+  const { w } = useWindowSize();
+  const isMobile = w < 768;
+  const isTablet = w < 1024;
+
+  return (
+    <section
+      style={{
+        padding: isMobile ? "48px 20px" : "70px 64px",
+        background: C.bg,
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 1140,
+          margin: "0 auto",
+          display: isMobile ? "flex" : "grid",
+          gridTemplateColumns: isTablet ? "1fr" : "1.1fr 0.9fr",
+          gap: isMobile ? 48 : 80,
+          alignItems: "center",
+          flexDirection: "column",
+        }}
+      >
+        {/* Left: stats grid */}
+        <div className="ww-reveal">
           <div
             style={{
               display: "grid",
@@ -1121,7 +1315,7 @@ const WhySection = ({ accent }: { accent: string }) => {
               gap: isMobile ? 12 : 16,
             }}
           >
-            {stats.map((s, i) => (
+            {squadStats.map((s, i) => (
               <div
                 key={i}
                 style={{
@@ -1172,56 +1366,31 @@ const WhySection = ({ accent }: { accent: string }) => {
             ))}
           </div>
         </div>
+
+        {/* Right: gym-lower image */}
+        <div
+          className="ww-reveal"
+          style={{ animationDelay: ".12s", marginTop: isMobile ? 32 : 0 }}
+        >
+          <img
+            src="/media/gym-lower.webp"
+            alt="Workout Warehouse facility"
+            loading="lazy"
+            width="651"
+            height="488"
+            style={{
+              width: "100%",
+              borderRadius: 18,
+              display: "block",
+              maxHeight: 400,
+              objectFit: "cover",
+            }}
+          />
+        </div>
       </div>
     </section>
   );
 };
-
-/* ───────────────────────────────────────────
-   COACHES
-─────────────────────────────────────────── */
-const coaches = [
-  {
-    name: "SARAH K.",
-    role: "HIIT & Conditioning",
-    base: "Highway Mall",
-    img: "/media/coach-sarah.webp",
-    classes: 847,
-    rating: 4.9,
-  },
-  {
-    name: "ALEX M.",
-    role: "Strength & Power",
-    base: "Highway Mall",
-    img: "/media/coach-alex.webp",
-    classes: 612,
-    rating: 4.8,
-  },
-  {
-    name: "LUNA R.",
-    role: "Zen & Flow",
-    base: "Highway Mall",
-    img: "/media/coach-luna.webp",
-    classes: 1204,
-    rating: 5.0,
-  },
-  {
-    name: "JAKE T.",
-    role: "Cardio & Endurance",
-    base: "Highway Mall",
-    img: "/media/coach-jake.webp",
-    classes: 538,
-    rating: 4.7,
-  },
-  {
-    name: "MIA S.",
-    role: "Recovery & Mobility",
-    base: "Highway Mall",
-    img: "/media/coach-mia.webp",
-    classes: 423,
-    rating: 4.9,
-  },
-];
 
 const CoachCard = ({ coach, accent }: { coach: any; accent: string }) => {
   const { w } = useWindowSize();
@@ -1357,7 +1526,7 @@ const CoachesSection = memo(({ accent }: { accent: string }) => {
   return (
     <section
       id="coaches"
-      style={{ padding: isMobile ? "72px 0" : "100px 0", background: C.bg }}
+      style={{ padding: isMobile ? "40px 0" : "60px 0", background: C.bg }}
     >
       <div
         style={{
@@ -1531,7 +1700,7 @@ const Testimonials = ({ accent }: { accent: string }) => {
   return (
     <section
       style={{
-        padding: isMobile ? "72px 20px" : "100px 64px",
+        padding: isMobile ? "48px 20px" : "60px 64px",
         background: C.bg,
         position: "relative",
       }}
@@ -1804,7 +1973,7 @@ const PricingScheduleSection = memo(({ accent }: { accent: string }) => {
     <section
       id="pricing"
       style={{
-        padding: isMobile ? "72px 20px" : "100px 64px",
+        padding: isMobile ? "48px 20px" : "60px 64px",
         background: C.bg,
         position: "relative",
         overflow: "hidden",
@@ -1827,7 +1996,7 @@ const PricingScheduleSection = memo(({ accent }: { accent: string }) => {
       <div style={{ maxWidth: 1140, margin: "0 auto" }}>
         <div
           className="ww-reveal"
-          style={{ textAlign: "center", marginBottom: isMobile ? 36 : 48 }}
+          style={{ textAlign: "center", marginBottom: isMobile ? 24 : 32 }}
         >
           <span
             style={{
@@ -1920,7 +2089,7 @@ const PricingScheduleSection = memo(({ accent }: { accent: string }) => {
                 borderRadius: 22,
                 overflow: "hidden",
                 border: "1px solid rgba(255,255,255,.06)",
-                marginBottom: 32,
+                marginBottom: 12, // tightened spacing per design feedback
               }}
             >
               <div
@@ -1942,7 +2111,7 @@ const PricingScheduleSection = memo(({ accent }: { accent: string }) => {
                   GYM MEMBERSHIPS
                 </h3>
               </div>
-              <div style={{ padding: isMobile ? "0" : "8px 0" }}>
+              <div style={{ padding: isMobile ? "0" : "0" }}>
                 {standardRates.map((rate, i) => (
                   <div
                     key={i}
@@ -1950,7 +2119,7 @@ const PricingScheduleSection = memo(({ accent }: { accent: string }) => {
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
-                      padding: isMobile ? "16px 18px" : "18px 24px",
+                      padding: isMobile ? "8px 18px" : "10px 24px",
                       borderBottom:
                         i < standardRates.length - 1
                           ? "1px solid rgba(255,255,255,.04)"
@@ -2171,7 +2340,7 @@ const PricingScheduleSection = memo(({ accent }: { accent: string }) => {
         {activeTab === "student" && (
           <div style={{ animation: "ww-fadeUp .4s ease" }}>
             {/* Student badge */}
-            <div style={{ textAlign: "center", marginBottom: 32 }}>
+            <div style={{ textAlign: "center", marginBottom: 16 }}>
               <div
                 style={{
                   display: "inline-flex",
@@ -2225,12 +2394,12 @@ const PricingScheduleSection = memo(({ accent }: { accent: string }) => {
                   STUDENT MEMBERSHIPS
                 </h3>
               </div>
-              <div style={{ padding: isMobile ? "0" : "8px 0" }}>
+              <div style={{ padding: isMobile ? "0" : "0" }}>
                 {studentRates.map((rate, i) => (
                   <div
                     key={i}
                     style={{
-                      padding: isMobile ? "18px 18px" : "20px 24px",
+                      padding: isMobile ? "8px 18px" : "10px 24px",
                       borderBottom:
                         i < studentRates.length - 1
                           ? "1px solid rgba(255,255,255,.04)"
@@ -2576,7 +2745,7 @@ const CtaBand = ({
     <section
       id="contact"
       style={{
-        padding: isMobile ? "64px 20px" : "100px 64px",
+        padding: isMobile ? "48px 20px" : "60px 64px",
         background: C.bg,
         position: "relative",
         overflow: "hidden",
@@ -2711,36 +2880,15 @@ const Footer = () => {
         >
           {/* Brand */}
           <div style={{ gridColumn: isMobile ? "1 / -1" : "auto" }}>
-            <div
+            <img
+              src="/media/ww-logo.webp"
+              alt="Workout Warehouse logo"
               style={{
-                display: "flex",
-                alignItems: "baseline",
-                gap: 3,
+                height: 72,
                 marginBottom: 14,
+                display: "block",
               }}
-            >
-              <span
-                style={{
-                  fontFamily: "'Inter Tight',sans-serif",
-                  fontSize: 22,
-                  fontWeight: 900,
-                  color: C.primary,
-                }}
-              >
-                WORKOUT
-              </span>
-              <span
-                style={{
-                  fontFamily: "'Inter Tight',sans-serif",
-                  fontSize: 22,
-                  fontWeight: 800,
-                  color: C.white,
-                  letterSpacing: ".16em",
-                }}
-              >
-                WAREHOUSE
-              </span>
-            </div>
+            />
             <p
               style={{
                 fontFamily: "'Tenor Sans',serif",
@@ -3219,12 +3367,15 @@ export default function WorkoutWarehouse() {
 
       <Nav openJoin={() => setJoinOpen(true)} />
       <Hero openJoin={() => setJoinOpen(true)} />
+      <CurrentOffers />
       <Ticker />
       <VibeGrid accent={accent} setAccent={setAccent} />
       <WhySection accent={accent} />
       <CoachesSection accent={accent} />
+      <StatsSection accent={accent} />
       <Testimonials accent={accent} />
       <PricingScheduleSection accent={accent} />
+      <FaqSection />
       <CtaBand openJoin={() => setJoinOpen(true)} accent={accent} />
       <Footer />
 
