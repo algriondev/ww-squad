@@ -145,7 +145,7 @@ const JoinModal = memo(({ onClose }: { onClose: () => void }) => {
     }`;
 
     const encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/254700000000?text=${encodedMessage}`, "_blank", "noopener");
+    window.open(`https://wa.me/254759983995?text=${encodedMessage}`, "_blank", "noopener");
     setSubmitted(true);
   };
 
