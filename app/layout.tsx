@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 // ── Meta ──────────────────────────────────────────
 export const metadata: Metadata = {
-  title: "Workout Warehouse | The End of Average",
+  title: "Workout Warehouse | Fitness | Wellness | Lifestyle",
   description:
     "Workout Warehouse — A people-first fitness movement. Luxury. Edge. Speed. Community. Highway Mall, Nairobi.",
   keywords: [
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   ],
   // Open Graph (social previews)
   openGraph: {
-    title: "Workout Warehouse | The End of Average",
+    title: "Workout Warehouse | Fitness | Wellness | Lifestyle",
     description:
       "Not a gym. A movement. Workout Warehouse fuses luxury, raw energy, speed and tech into one obsessive fitness experience.",
     type: "website",

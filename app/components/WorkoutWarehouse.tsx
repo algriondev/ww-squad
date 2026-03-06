@@ -247,9 +247,8 @@ const CurrentOffers = memo(() => {
             lineHeight: 1.5,
           }}
         >
-          Catch our latest promotions and limited-time deals here – from
-          half-price first month to free recovery sessions. This section is
-          easy to update in code or hooked to a CMS later.
+          Catch our latest promotions and limited time deals here – from
+          February Offers, Our annual anniversary offers, Black November, just to mention a few.
         </p>
       </div>
     </section>
@@ -262,7 +261,7 @@ const FaqSection = memo(() => {
   const faqs = [
     {
       q: "What are your opening hours?",
-      a: "We're open 24/7 – training whenever you are.",
+      a: "We're open 5am-9:30 PM Monday-Friday, 7am-5pm on Sartudays and 7am-3pm on Sundays",
     },
     {
       q: "How can I cancel or freeze my membership?",
@@ -1230,7 +1229,7 @@ const WhySection = ({ accent }: { accent: string }) => {
 ─────────────────────────────────────────── */
 const coaches = [
   {
-    name: "SARAH K.",
+    name: "LINNET M.",
     role: "HIIT & Conditioning",
     base: "Highway Mall",
     img: "/media/coach-sarah.webp",
@@ -1238,7 +1237,7 @@ const coaches = [
     rating: 4.9,
   },
   {
-    name: "ALEX M.",
+    name: "BARRACK H.",
     role: "Strength & Power",
     base: "Highway Mall",
     img: "/media/coach-alex.webp",
@@ -1246,7 +1245,7 @@ const coaches = [
     rating: 4.8,
   },
   {
-    name: "VINNY.",
+    name: "VINCENT J.",
     role: "Zen & Flow",
     base: "Highway Mall",
     img: "/media/coach-luna.webp",
@@ -1254,7 +1253,7 @@ const coaches = [
     rating: 5.0,
   },
   {
-    name: "JAKE T.",
+    name: "DANIEL O.",
     role: "Cardio & Endurance",
     base: "Highway Mall",
     img: "/media/coach-jake.webp",
@@ -1262,7 +1261,7 @@ const coaches = [
     rating: 4.7,
   },
   {
-    name: "MIA S.",
+    name: "HAMISI J.",
     role: "Recovery & Mobility",
     base: "Highway Mall",
     img: "/media/coach-mia.webp",
@@ -2792,7 +2791,7 @@ const CtaBand = ({
             lineHeight: 1.65,
           }}
         >
-          Become part of the movement. First session free. No contracts required
+          Become part of the movement. . No contracts required
           to start.
         </p>
         <button
@@ -2829,7 +2828,7 @@ const CtaBand = ({
             color: C.slate,
           }}
         >
-          Cancel anytime · No hidden fees · First session free
+          Cancel anytime · No hidden fees · 
         </div>
       </div>
     </section>
@@ -2898,7 +2897,7 @@ const Footer = () => {
                 maxWidth: 280,
               }}
             >
-              The end of average. A people-first fitness movement built for the
+              Fitness | Wellness | Lifestyle. A people-first fitness movement built for the
               modern era.
             </p>
             <div style={{ marginTop: 20, display: "flex", gap: 14 }}>

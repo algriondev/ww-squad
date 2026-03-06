@@ -177,7 +177,7 @@ magick coach-luna.webp -resize 800x1200 -quality 75 -strip coach-luna-opt.webp
 3. **[public/media/hero-captions.vtt](public/media/hero-captions.vtt)** (NEW)
    - WebVTT format captions for hero video
    - "Workout Warehouse - Premium fitness training"
-   - "The end of average. Join the squad."
+   - "Fitness | Wellness | Lifestyle. Join the squad."
 
 ---
 

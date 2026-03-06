@@ -145,7 +145,7 @@ WEBVTT
 Workout Warehouse - Premium fitness training
 
 00:00:05.000 --> 00:00:10.000
-The end of average. Join the squad.
+Fitness | Wellness | Lifestyle. Join the squad.
 ```
 
 ### 4. [OPTIMIZATION_COMPLETED.md](OPTIMIZATION_COMPLETED.md) - NEW
