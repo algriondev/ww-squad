@@ -263,7 +263,7 @@ This is the MOST IMPORTANT remaining task for achieving 90+ score.
 - [ ] Compress luna.webp: 11.5MB → 100KB
 - [ ] Compress alex.webp: 9.9MB → 100KB
 - [ ] Compress jake.webp: 7.3MB → 100KB
-- [ ] Compress mia.webp: 5.9MB → 100KB
+- [ ] Compress Hamisi.webp: 5.9MB → 100KB
 - [ ] Compress sarah.webp: 3.1MB → 100KB
 
 **See [IMAGE_COMPRESSION_GUIDE.md](IMAGE_COMPRESSION_GUIDE.md) for step-by-step instructions.**

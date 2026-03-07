@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback, memo, lazy, Suspense } from "react";
+import Footer from './Footer';
+import CoachesSection from './CoachesSection';
+import VibeGrid from './VibeGrid';
 
 /* ───────────────────────────────────────────
    DESIGN TOKENS — WORKOUT WAREHOUSE REBRAND
@@ -161,11 +164,11 @@ const Grain = memo(() => (
 ─────────────────────────────────────────── */
 const tickerData = [
   "412 SQUAD MEMBERS TRAINING NOW",
-  "COACH SARAH · 'HARDCORE HIIT' — SOHO · 12 SPOTS LEFT",
+  "COACH LINET· 'HARDCORE HIIT' — SOHO · 12 SPOTS LEFT",
   "98% PEAK PERFORMANCE REACHED TODAY",
   "RECOVERY PRO SESSIONS LIVE IN SHOREDITCH",
   "SQUAD RECORD BROKEN — 6:14 AM BRUTAL THURSDAY",
-  "NEW COACH ALEX JOINS SHOREDITCH BASE",
+  "NEW COACH Barrack JOINS SHOREDITCH BASE",
 ];
 const Ticker = () => (
   <div
@@ -927,172 +930,6 @@ const vibes = [
   },
 ];
 
-const VibeGrid = memo(
-  ({
-    accent,
-    setAccent,
-  }: {
-    accent: string;
-    setAccent: (color: string) => void;
-  }) => {
-    const { w } = useWindowSize();
-    const isMobile = w < 768;
-
-    return (
-      <section
-        id="explore"
-        style={{
-          padding: isMobile ? "48px 20px" : "60px 64px",
-          background: C.bg,
-        }}
-      >
-        <div style={{ maxWidth: 1140, margin: "0 auto" }}>
-          <div
-            className="ww-reveal"
-            style={{ marginBottom: isMobile ? 36 : 52 }}
-          >
-            <span
-              style={{
-                fontFamily: "'Inter Tight',sans-serif",
-                fontSize: 11,
-                fontWeight: 600,
-                color: C.primary,
-                letterSpacing: ".22em",
-              }}
-            >
-              EXPLORE
-            </span>
-            <h2
-              style={{
-                fontFamily: "'Inter Tight',sans-serif",
-                fontSize: isMobile ? 36 : 52,
-                fontWeight: 900,
-                color: C.white,
-                marginTop: 8,
-                lineHeight: 1.05,
-              }}
-            >
-              Find your
-              <br />
-              <span style={{ color: accent }}>zone.</span>
-            </h2>
-          </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: isMobile ? "1fr 1fr" : "1fr 1fr 1fr 1fr",
-              gap: isMobile ? 12 : 16,
-            }}
-          >
-            {vibes.map((v, i) => {
-              const active = accent === v.color;
-              return (
-                <div
-                  key={v.id}
-                  className="ww-reveal"
-                  style={{ animationDelay: `${i * 0.01}s` }}
-                >
-                  <button
-                    onClick={() => setAccent(active ? C.primary : v.color)}
-                    aria-label={`Select ${v.label} training zone`}
-                    aria-pressed={active}
-                    style={{
-                      width: "100%",
-                      textAlign: "left",
-                      cursor: "pointer",
-                      backgroundImage: v.bgImage
-                        ? `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${v.bgImage})`
-                        : "none",
-                      backgroundColor: v.bgImage ? "transparent" : C.card,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      backgroundRepeat: "no-repeat",
-                      border: `1.5px solid ${active ? v.color : "rgba(255,255,255,.06)"}`,
-                      borderRadius: 20,
-                      padding: isMobile ? "22px 18px" : "32px 24px",
-                      transition: "border .25s",
-                      boxShadow: active ? `0 0 28px ${v.color}28` : "none",
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!active) {
-                        e.currentTarget.style.borderColor = `${v.color}60`;
-                        e.currentTarget.style.backgroundColor = `${v.color}08`;
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!active) {
-                        e.currentTarget.style.borderColor =
-                          "rgba(255,255,255,.06)";
-                        e.currentTarget.style.backgroundColor = "transparent";
-                      }
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontFamily: "'Inter Tight',sans-serif",
-                        fontSize: isMobile ? 14 : 16,
-                        fontWeight: 800,
-                        color: active ? v.color : C.white,
-                        letterSpacing: ".12em",
-                        transition: "color .3s",
-                      }}
-                    >
-                      {v.label}
-                    </div>
-                    <div
-                      style={{
-                        fontFamily: "'Tenor Sans',serif",
-                        fontSize: isMobile ? 11 : 12,
-                        color: "#9ca3af",
-                        marginTop: 4,
-                      }}
-                    >
-                      {v.sub}
-                    </div>
-                    {/* bottom accent line */}
-                    <div
-                      style={{
-                        marginTop: isMobile ? 16 : 22,
-                        height: 2,
-                        borderRadius: 1,
-                        background: active ? v.color : "rgba(255,255,255,.08)",
-                        boxShadow: active ? `0 0 8px ${v.color}50` : "none",
-                        transition: "all .35s",
-                      }}
-                    />
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-          {/* stats grid closes */}
-
-          {/* Gym Interior Photo */}
-          <div
-            className="ww-reveal"
-            style={{ animationDelay: ".3s", marginTop: isMobile ? 32 : 48 }}
-          >
-            <img
-              src="/media/gym-interior.webp"
-              alt="Workout Warehouse interior"
-              loading="lazy"
-              width="651"
-              height="488"
-              style={{
-                width: "100%",
-                borderRadius: 18,
-                display: "block",
-                maxHeight: 400,
-                objectFit: "cover",
-              }}
-            />
-          </div>
-        </div>
-        {/* container closes */}
-      </section>
-    );
-  },
-);
 
 /* ───────────────────────────────────────────
    WHY WORKOUT WAREHOUSE (editorial asymmetric)
@@ -1240,7 +1077,7 @@ const coaches = [
     name: "BARRACK H.",
     role: "Strength & Power",
     base: "Highway Mall",
-    img: "/media/coach-alex.webp",
+    img: "/media/coach-Barrack.webp",
     classes: 612,
     rating: 4.8,
   },
@@ -1248,7 +1085,7 @@ const coaches = [
     name: "VINCENT J.",
     role: "Zen & Flow",
     base: "Highway Mall",
-    img: "/media/coach-luna.webp",
+    img: "/media/coach-Vincent .webp",
     classes: 1204,
     rating: 5.0,
   },
@@ -1256,7 +1093,7 @@ const coaches = [
     name: "DANIEL O.",
     role: "Cardio & Endurance",
     base: "Highway Mall",
-    img: "/media/coach-jake.webp",
+    img: "/media/coach-Daniel.webp",
     classes: 538,
     rating: 4.7,
   },
@@ -1264,7 +1101,7 @@ const coaches = [
     name: "HAMISI J.",
     role: "Recovery & Mobility",
     base: "Highway Mall",
-    img: "/media/coach-mia.webp",
+    img: "/media/coach-Hamisi.webp",
     classes: 423,
     rating: 4.9,
   },
@@ -1390,269 +1227,6 @@ const StatsSection = ({ accent }: { accent: string }) => {
     </section>
   );
 };
-
-const CoachCard = ({ coach, accent }: { coach: any; accent: string }) => {
-  const { w } = useWindowSize();
-  const isMobile = w < 768;
-  return (
-    <div
-      style={{
-        flexShrink: 0,
-        width: isMobile ? 260 : 280,
-        background: C.card,
-        borderRadius: 22,
-        overflow: "hidden",
-        border: "1px solid rgba(255,255,255,.06)",
-        transition: "transform .3s,border-color .3s",
-        cursor: "pointer",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translateY(-6px)";
-        e.currentTarget.style.borderColor = `${accent}40`;
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = "translateY(0)";
-        e.currentTarget.style.borderColor = "rgba(255,255,255,.06)";
-      }}
-    >
-      {/* Avatar area */}
-      <div
-        style={{
-          height: 280,
-          background: `linear-gradient(135deg,${C.cardUp},${C.card})`,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        <img
-          src={coach.img}
-          alt={`${coach.name}, ${coach.role} coach`}
-          loading="lazy"
-          width="280"
-          height="280"
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            bottom: 14,
-            right: 16,
-            fontFamily: "'Inter Tight',sans-serif",
-            fontSize: 10,
-            fontWeight: 700,
-            color: C.bg,
-            background: accent,
-            padding: "4px 10px",
-            borderRadius: 50,
-            letterSpacing: ".1em",
-          }}
-        >
-          ★ {coach.rating}
-        </div>
-      </div>
-      <div style={{ padding: "20px 20px 22px" }}>
-        <div
-          style={{
-            fontFamily: "'Inter Tight',sans-serif",
-            fontSize: 16,
-            fontWeight: 800,
-            color: C.white,
-          }}
-        >
-          {coach.name}
-        </div>
-        <div
-          style={{
-            fontFamily: "'Tenor Sans',serif",
-            fontSize: 13,
-            color: C.slate,
-            marginTop: 3,
-          }}
-        >
-          {coach.role}
-        </div>
-        <div style={{ display: "flex", gap: 12, marginTop: 14 }}>
-          <span
-            style={{
-              fontFamily: "'Inter Tight',sans-serif",
-              fontSize: 10,
-              color: C.slateL,
-              background: "rgba(255,255,255,.06)",
-              padding: "4px 10px",
-              borderRadius: 6,
-              letterSpacing: ".08em",
-            }}
-          >
-            📍 {coach.base}
-          </span>
-          <span
-            style={{
-              fontFamily: "'Inter Tight',sans-serif",
-              fontSize: 10,
-              color: C.slateL,
-              background: "rgba(255,255,255,.06)",
-              padding: "4px 10px",
-              borderRadius: 6,
-              letterSpacing: ".08em",
-            }}
-          >
-            {coach.classes} classes
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const CoachesSection = memo(({ accent }: { accent: string }) => {
-  const { w } = useWindowSize();
-  const isMobile = w < 768;
-  const isTablet = w < 1024;
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  const scroll = (dir: number) => {
-    if (scrollRef.current)
-      scrollRef.current.scrollBy({ left: dir * 300, behavior: "auto" });
-  };
-
-  return (
-    <section
-      id="coaches"
-      style={{ padding: isMobile ? "40px 0" : "60px 0", background: C.bg }}
-    >
-      <div
-        style={{
-          maxWidth: 1140,
-          margin: "0 auto",
-          padding: "0 " + (isMobile ? "20px" : "64px"),
-        }}
-      >
-        <div
-          className="ww-reveal"
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-end",
-            marginBottom: isMobile ? 28 : 40,
-          }}
-        >
-          <div>
-            <span
-              style={{
-                fontFamily: "'Inter Tight',sans-serif",
-                fontSize: 11,
-                fontWeight: 600,
-                color: accent,
-                letterSpacing: ".22em",
-              }}
-            >
-              THE COACHES
-            </span>
-            <h2
-              style={{
-                fontFamily: "'Inter Tight',sans-serif",
-                fontSize: isMobile ? 34 : 50,
-                fontWeight: 900,
-                color: C.white,
-                marginTop: 8,
-                lineHeight: 1.05,
-              }}
-            >
-              Led by the
-              <br />
-              <span style={{ color: accent }}>best.</span>
-            </h2>
-          </div>
-          {!isMobile && (
-            <div style={{ display: "flex", gap: 10 }}>
-              <button
-                onClick={() => scroll(-1)}
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: "50%",
-                  background: C.card,
-                  border: "1px solid rgba(255,255,255,.1)",
-                  color: C.white,
-                  fontSize: 18,
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  transition: "background .2s",
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.background = C.cardUp)
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.background = C.card)
-                }
-              >
-                ←
-              </button>
-              <button
-                onClick={() => scroll(1)}
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: "50%",
-                  background: C.card,
-                  border: "1px solid rgba(255,255,255,.1)",
-                  color: C.white,
-                  fontSize: 18,
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  transition: "background .2s",
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.background = C.cardUp)
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.background = C.card)
-                }
-              >
-                →
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Horizontal scroll row */}
-      <div
-        ref={scrollRef}
-        style={{
-          display: "flex",
-          gap: isMobile ? 14 : 18,
-          overflowX: "auto",
-          padding: "0 " + (isMobile ? "20px" : "64px"),
-          paddingBottom: 24,
-          scrollbarWidth: "none",
-        }}
-      >
-        <style>{`::-webkit-scrollbar{display:none}`}</style>
-        {coaches.map((c, i) => (
-          <div
-            key={i}
-            className="ww-reveal"
-            style={{ animationDelay: `${i * 0.02}s` }}
-          >
-            <CoachCard coach={c} accent={accent} />
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-});
 
 /* ───────────────────────────────────────────
    TESTIMONIALS
@@ -2832,189 +2406,6 @@ const CtaBand = ({
         </div>
       </div>
     </section>
-  );
-};
-
-/* ───────────────────────────────────────────
-   FOOTER
-─────────────────────────────────────────── */
-const Footer = () => {
-  const { w } = useWindowSize();
-  const isMobile = w < 768;
-  const cols = [
-    {
-      title: "WORKOUT WAREHOUSE",
-      items: ["About Us", "Careers", "Press", "Blog"],
-    },
-    {
-      title: "SERVICES",
-      items: [
-        "Group Classes",
-        "Personal Training",
-        "Cold Plunge",
-        "Physiotherapy",
-        "BMI Analysis",
-      ],
-    },
-    {
-      title: "SUPPORT",
-      items: ["Help Center", "Membership FAQ", "Contact Us", "Privacy Policy"],
-    },
-  ];
-  return (
-    <footer
-      style={{
-        background: "#0a0a0a",
-        borderTop: "1px solid rgba(255,255,255,.05)",
-        padding: isMobile ? "48px 20px 32px" : "72px 64px 40px",
-      }}
-    >
-      <div style={{ maxWidth: 1140, margin: "0 auto" }}>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: isMobile ? "1fr 1fr" : "2fr 1fr 1fr 1fr",
-            gap: isMobile ? 32 : 48,
-          }}
-        >
-          {/* Brand */}
-          <div style={{ gridColumn: isMobile ? "1 / -1" : "auto" }}>
-            <img
-              src="/media/ww-logo.webp"
-              alt="Workout Warehouse logo"
-              style={{
-                height: 72,
-                marginBottom: 14,
-                display: "block",
-              }}
-            />
-            <p
-              style={{
-                fontFamily: "'Tenor Sans',serif",
-                fontSize: 13,
-                color: C.slate,
-                lineHeight: 1.6,
-                maxWidth: 280,
-              }}
-            >
-              Fitness | Wellness | Lifestyle. A people-first fitness movement built for the
-              modern era.
-            </p>
-            <div style={{ marginTop: 20, display: "flex", gap: 14 }}>
-              {[
-                { k: "IG" },
-                { k: "TW" },
-                { k: "TK" },
-                { k: "YT" },
-                { k: "WS", wa: true },
-              ].map(({ k, wa }) => (
-                <div
-                  key={k}
-                  onClick={() => {
-                    if (wa) window.open(WA_URL, "_blank", "noopener");
-                  }}
-                  style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: "50%",
-                    background: C.card,
-                    border: "1px solid rgba(255,255,255,.08)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontFamily: "'Inter Tight',sans-serif",
-                    fontSize: wa ? 14 : 10,
-                    fontWeight: 700,
-                    color: C.slateL,
-                    cursor: "pointer",
-                    transition: "border-color .2s,color .2s,background .2s",
-                  }}
-                  onMouseEnter={(e) => {
-                    const c = wa ? WA_GREEN : C.primary;
-                    e.currentTarget.style.borderColor = `${c}50`;
-                    e.currentTarget.style.color = c;
-                    if (wa) e.currentTarget.style.background = WA_GREEN_DIM;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = "rgba(255,255,255,.08)";
-                    e.currentTarget.style.color = C.slateL;
-                    e.currentTarget.style.background = C.card;
-                  }}
-                >
-                  {wa ? <WhatsAppIcon size={16} /> : k}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {cols.map((col) => (
-            <div key={col.title}>
-              <div
-                style={{
-                  fontFamily: "'Inter Tight',sans-serif",
-                  fontSize: 10,
-                  fontWeight: 700,
-                  color: C.slateL,
-                  letterSpacing: ".18em",
-                  marginBottom: 16,
-                }}
-              >
-                {col.title}
-              </div>
-              {col.items.map((item) => (
-                <div
-                  key={item}
-                  style={{
-                    fontFamily: "'Tenor Sans',serif",
-                    fontSize: 13,
-                    color: C.slate,
-                    padding: "5px 0",
-                    cursor: "pointer",
-                    transition: "color .2s",
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = C.white)}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "#9ca3af")}
-                >
-                  {item}
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-
-        <div
-          style={{
-            marginTop: isMobile ? 40 : 56,
-            paddingTop: 24,
-            borderTop: "1px solid rgba(255,255,255,.06)",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: 12,
-          }}
-        >
-          <span
-            style={{
-              fontFamily: "'Tenor Sans',serif",
-              fontSize: 12,
-              color: C.slate,
-            }}
-          >
-            © 2026 WORKOUT WAREHOUSE. All rights reserved.
-          </span>
-          <span
-            style={{
-              fontFamily: "'Tenor Sans',serif",
-              fontSize: 12,
-              color: C.slate,
-            }}
-          >
-            Nairobi · Built for the movement.
-          </span>
-        </div>
-      </div>
-    </footer>
   );
 };
 

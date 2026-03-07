@@ -24,7 +24,7 @@ Compressing them will:
 → https://squoosh.app/
 
 ### Step 2: Compress Each Coach Image
-For each image (luna, alex, jake, mia, sarah):
+For each image (luna, alex, jake, Hamisi, sarah):
 
 1. **Click** "Select an image"
 2. **Choose** `public/media/coach-[name].webp`
@@ -45,7 +45,7 @@ For each image (luna, alex, jake, mia, sarah):
 Move-Item coach-luna-compressed.webp coach-luna.webp -Force
 Move-Item coach-alex-compressed.webp coach-alex.webp -Force
 Move-Item coach-jake-compressed.webp coach-jake.webp -Force
-Move-Item coach-mia-compressed.webp coach-mia.webp -Force
+Move-Item coach-Hamisi-compressed.webp coach-Hamisi.webp -Force
 Move-Item coach-sarah-compressed.webp coach-sarah.webp -Force
 ```
 
@@ -53,7 +53,7 @@ Move-Item coach-sarah-compressed.webp coach-sarah.webp -Force
 - **Luna:** 11.5MB → 85KB
 - **Alex:** 9.9MB → 75KB
 - **Jake:** 7.3MB → 60KB
-- **Mia:** 5.9MB → 45KB
+- **Hamisi:** 5.9MB → 45KB
 - **Sarah:** 3.1MB → 30KB
 
 ---
@@ -90,7 +90,7 @@ cd "c:\Users\HP\workout-warehouse\public\media"
 magick coach-luna.webp -resize 800x1200 -quality 75 coach-luna.webp
 magick coach-alex.webp -resize 800x1200 -quality 75 coach-alex.webp
 magick coach-jake.webp -resize 800x1200 -quality 75 coach-jake.webp
-magick coach-mia.webp -resize 800x1200 -quality 75 coach-mia.webp
+magick coach-Hamisi.webp -resize 800x1200 -quality 75 coach-Hamisi.webp
 magick coach-sarah.webp -resize 800x1200 -quality 75 coach-sarah.webp
 
 # Compress vibe images (optional, also huge)
@@ -121,7 +121,7 @@ Name                 Size (KB)
 coach-luna.webp          85
 coach-alex.webp          75
 coach-jake.webp          60
-coach-mia.webp           45
+coach-Hamisi.webp           45
 coach-sarah.webp         30
 ```
 

@@ -52,7 +52,7 @@ Follow [IMAGE_COMPRESSION_GUIDE.md](IMAGE_COMPRESSION_GUIDE.md):
 
 #### Quick Summary:
 1. Go to https://squoosh.app/
-2. Upload `coach-luna.webp` → Set quality to 75, resize to 800×1200
+2. Upload `coach-Vincent .webp` → Set quality to 75, resize to 800×1200
 3. Download → Replace file
 4. Repeat for remaining 4 coach images
 5. Optional: Compress vibe images (follow same process)
@@ -71,10 +71,10 @@ Get-Item public/media/coach-*.webp |
 # Expected output:
 # Name                Size (MB)
 # ----                ---------
-# coach-luna.webp     0.08
-# coach-alex.webp     0.07
-# coach-jake.webp     0.06
-# coach-mia.webp      0.04
+# coach-Vincent .webp     0.08
+# coach-Barrack.webp     0.07
+# coach-Daniel.webp     0.06
+# coach-Hamisi.webp      0.04
 # coach-sarah.webp    0.03
 
 # Start dev server to test

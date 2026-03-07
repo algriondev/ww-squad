@@ -127,10 +127,10 @@ Accessibility: 95+ (expected)
 
 ```
 Coach Images (need external compression):
-□ luna.webp: 11.5MB → 100KB (compress with Squoosh/TinyPNG to 75% quality, 800×1200)
-□ alex.webp: 9.9MB → 100KB (same)
-□ jake.webp: 7.3MB → 100KB (same)
-□ mia.webp: 5.9MB → 100KB (same)
+□ Vincent .webp: 11.5MB → 100KB (compress with Squoosh/TinyPNG to 75% quality, 800×1200)
+□ Barrack.webp: 9.9MB → 100KB (same)
+□ Daniel.webp: 7.3MB → 100KB (same)
+□ Hamisi.webp: 5.9MB → 100KB (same)
 □ sarah.webp: 3.1MB → 100KB (same)
 
 Vibe Grid Images (need external compression):
@@ -149,7 +149,7 @@ Estimated Total Savings: 40MB+ on initial load
 ### Compression Command (once images are saved):
 ```bash
 # ImageMagick approach (if installed)
-magick coach-luna.webp -resize 800x1200 -quality 75 -strip coach-luna-opt.webp
+magick coach-Vincent .webp -resize 800x1200 -quality 75 -strip coach-Vincent -opt.webp
 ```
 
 ### Online Tools:
@@ -198,8 +198,8 @@ winget install ImageMagick.ImageMagick
 
 # Compress coach images
 cd public/media
-magick coach-luna.webp -resize 800x1200 -quality 75 coach-luna.webp
-magick coach-alex.webp -resize 800x1200 -quality 75 coach-alex.webp
+magick coach-Vincent .webp -resize 800x1200 -quality 75 coach-Vincent .webp
+magick coach-Barrack.webp -resize 800x1200 -quality 75 coach-Barrack.webp
 # ... repeat for remaining images
 ```
 

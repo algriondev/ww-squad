@@ -1,8 +1,8 @@
-"use client";
 
-import WorkoutWarehouse from "@/components/WorkoutWarehouse";
-export const dynamic = "force-static";
+import WorkoutWarehouse from './components/WorkoutWarehouse';
 
-export default function Home() {
+export const dynamic = 'force-static';
+
+export default function Page() {
   return <WorkoutWarehouse />;
 }
