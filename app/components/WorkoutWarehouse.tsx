@@ -580,7 +580,7 @@ const Hero = ({ openJoin }: { openJoin: () => void }) => {
         muted
         loop
         playsInline
-        preload="none"
+        preload="auto"
         poster="/media/hero-poster.webp"
         style={{
           position: "absolute",
@@ -591,14 +591,11 @@ const Hero = ({ openJoin }: { openJoin: () => void }) => {
           zIndex: 1,
         }}
       >
+        {/* Browser tries WebM FIRST (smaller) */}
+        <source src="/media/hero.webm" type="video/webm" />
+        
+        {/* If WebM not supported, use MP4 */}
         <source src="/media/hero.mp4" type="video/mp4" />
-        <track
-          kind="captions"
-          src="/media/hero-captions.vtt"
-          srcLang="en"
-          label="English captions"
-        />
-        Your browser does not support the video tag.
       </video>
 
       {/* Layered cinematic bg */}
