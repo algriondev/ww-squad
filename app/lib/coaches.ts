@@ -312,7 +312,7 @@ export const coaches = [
     img: "/media/coach-hassan.webp",
     classes: 468,
     rating: 4.7,
-    bio: "Max specializes in functional fitness and mobility training that translates directly to real-world movement and daily life. With a background in physical therapy and corrective exercise, Max helps members move better, reduce pain, and prevent injuries. His classes blend functional strength work with mobility drills and movement pattern training to build bodies that are both strong and resilient.",
+    bio: "Hassan specializes in functional fitness and mobility training that translates directly to real-world movement and daily life. With a background in physical therapy and corrective exercise, Hassan helps members move better, reduce pain, and prevent injuries. His classes blend functional strength work with mobility drills and movement pattern training to build bodies that are both strong and resilient.",
     philosophy: "Move well first, then move often. Quality movement is the foundation of everything else.",
     specialties: [
       "Functional Movement Patterns",

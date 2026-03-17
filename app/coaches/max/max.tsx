@@ -5,7 +5,7 @@ import { C } from "../../lib/constants";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import Link from "next/link";
 
-export default function CoachMobertPage() {
+export default function CoachMaxPage() {
   const router = useRouter();
   const { w } = useWindowSize();
   const isMobile = w < 768;
