@@ -303,7 +303,7 @@ export const coaches = [
       { day: "Sunday", time: "9:00 AM", class: "Active Recovery", duration: "60 min" },
     ],
   },
-  // NEW COACH 3: HASSAN
+  // NEW COACH 4: HASSAN
   {
     id: "hassan",
     name: "HASSAN.",
