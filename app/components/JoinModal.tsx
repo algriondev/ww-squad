@@ -59,7 +59,7 @@ const membershipLevels = [
     color: "#7ecfe3",
     label: "MONTHLY",
     sub: "Cancel anytime",
-    price: 5500,
+    price: 6000,
     perks: ["All gym access"],
   },
 ];
