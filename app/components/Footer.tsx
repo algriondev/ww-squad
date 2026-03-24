@@ -114,45 +114,17 @@ const Footer = memo(() => {
             </p>
             <div style={{ marginTop: 20, display: "flex", gap: 14 }}>
               {[
-                { k: "IG", href: "#" },
-                { k: "TW", href: "#" },
-                { k: "TK", href: "#" },
-                { k: "YT", href: "#" },
+                { k: "IG", href: "https://instagram.com/workoutwarehouse_ke" },
+                { k: "TW", href: "https://twitter.com/workoutwarehouse" },
+                { k: "TK", href: "https://tiktok.com/@workoutwarehouse" },
+                { k: "YT", href: "https://youtube.com/@workoutwarehouse" },
                 { k: "WS", wa: true },
               ].map(({ k, wa, href }) => (
                 <a
                   key={k}
                   href={wa ? WA_URL : href}
-                  target={wa ? "_blank" : undefined}
-                  rel={wa ? "noopener noreferrer" : undefined}
-                  style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: "50%",
-                    background: C.card,
-                    border: "1px solid rgba(255,255,255,.08)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontFamily: "'Inter Tight',sans-serif",
-                    fontSize: wa ? 14 : 10,
-                    fontWeight: 700,
-                    color: C.slateL,
-                    cursor: "pointer",
-                    transition: "border-color .2s,color .2s,background .2s",
-                    textDecoration: "none",
-                  }}
-                  onMouseEnter={(e) => {
-                    const c = wa ? WA_GREEN : C.primary;
-                    e.currentTarget.style.borderColor = `${c}50`;
-                    e.currentTarget.style.color = c;
-                    if (wa) e.currentTarget.style.background = WA_GREEN_DIM;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = "rgba(255,255,255,.08)";
-                    e.currentTarget.style.color = C.slateL;
-                    e.currentTarget.style.background = C.card;
-                  }}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   {wa ? <WhatsAppIcon size={16} /> : k}
                 </a>

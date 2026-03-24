@@ -1,9 +1,17 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback, memo, lazy, Suspense } from "react";
-import Footer from './Footer';
-import CoachesSection from './CoachesSection';
-import VibeGrid from './VibeGrid';
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  memo,
+  lazy,
+  Suspense,
+} from "react";
+import Footer from "./Footer";
+import CoachesSection from "./CoachesSection";
+import VibeGrid from "./VibeGrid";
 
 /* ───────────────────────────────────────────
    DESIGN TOKENS — WORKOUT WAREHOUSE REBRAND
@@ -251,7 +259,8 @@ const CurrentOffers = memo(() => {
           }}
         >
           Catch our latest promotions and limited time deals here – from
-          February Offers, Our annual anniversary offers, Black November, just to mention a few.
+          February Offers, Our annual anniversary offers, Black November, just
+          to mention a few.
         </p>
       </div>
     </section>
@@ -264,7 +273,7 @@ const FaqSection = memo(() => {
   const faqs = [
     {
       q: "What are your opening hours?",
-      a: "We're open 5am-9:30 PM Monday-Friday, 7am-5pm on Sartudays and 7am-3pm on Sundays",
+      a: "We're open 5am-9:30 PM Monday-Friday, 7am-5pm on Saturdays and 7am-3pm on Sundays",
     },
     {
       q: "How can I cancel or freeze my membership?",
@@ -443,7 +452,9 @@ const Nav = ({ openJoin }: { openJoin: () => void }) => {
         {isMobile && (
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-label={
+              menuOpen ? "Close navigation menu" : "Open navigation menu"
+            }
             aria-expanded={menuOpen}
             style={{
               background: "none",
@@ -593,7 +604,7 @@ const Hero = ({ openJoin }: { openJoin: () => void }) => {
       >
         {/* Browser tries WebM FIRST (smaller) */}
         <source src="/media/hero.webm" type="video/webm" />
-        
+
         {/* If WebM not supported, use MP4 */}
         <source src="/media/hero.mp4" type="video/mp4" />
       </video>
@@ -926,7 +937,6 @@ const vibes = [
     bgImage: "/media/vibe-recovery.webp",
   },
 ];
-
 
 /* ───────────────────────────────────────────
    WHY WORKOUT WAREHOUSE (editorial asymmetric)
@@ -1686,67 +1696,77 @@ const PricingScheduleSection = memo(({ accent }: { accent: string }) => {
                   <div
                     key={i}
                     style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      padding: isMobile ? "8px 18px" : "10px 24px",
+                      padding: isMobile ? "14px 18px" : "12px 24px",
                       borderBottom:
                         i < standardRates.length - 1
                           ? "1px solid rgba(255,255,255,.04)"
                           : "none",
-                      position: "relative",
                     }}
                   >
+                    {/* Badge first (if exists) */}
                     {rate.badge && (
-                      <span
-                        style={{
-                          position: "absolute",
-                          top: isMobile ? 8 : 10,
-                          right: isMobile ? 18 : 24,
-                          fontFamily: "'Inter Tight',sans-serif",
-                          fontSize: 8,
-                          fontWeight: 800,
-                          color: C.bg,
-                          background: accent,
-                          padding: "3px 10px",
-                          borderRadius: 50,
-                          letterSpacing: ".12em",
-                        }}
-                      >
-                        {rate.badge}
-                      </span>
+                      <div style={{ marginBottom: 8 }}>
+                        <span
+                          style={{
+                            fontFamily: "'Inter Tight',sans-serif",
+                            fontSize: 8,
+                            fontWeight: 800,
+                            color: C.bg,
+                            background: accent,
+                            padding: "3px 10px",
+                            borderRadius: 50,
+                            letterSpacing: ".12em",
+                            display: "inline-block",
+                          }}
+                        >
+                          {rate.badge}
+                        </span>
+                      </div>
                     )}
-                    <div>
+
+                    {/* Name and Price row */}
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "baseline",
+                        gap: 16,
+                        marginBottom: 4,
+                      }}
+                    >
                       <div
                         style={{
                           fontFamily: "'Inter Tight',sans-serif",
-                          fontSize: isMobile ? 14 : 16,
+                          fontSize: isMobile ? 15 : 16,
                           fontWeight: 700,
                           color: C.white,
                         }}
                       >
                         {rate.name}
                       </div>
+
                       <div
                         style={{
-                          fontFamily: "'Tenor Sans',serif",
-                          fontSize: isMobile ? 11 : 12,
-                          color: C.slate,
-                          marginTop: 3,
+                          fontFamily: "'Inter Tight',sans-serif",
+                          fontSize: isMobile ? 20 : 22,
+                          fontWeight: 900,
+                          color: accent,
+                          whiteSpace: "nowrap",
                         }}
                       >
-                        Valid for {rate.validity}
+                        KSh {rate.price}
                       </div>
                     </div>
+
+                    {/* Validity */}
                     <div
                       style={{
-                        fontFamily: "'Inter Tight',sans-serif",
-                        fontSize: isMobile ? 18 : 22,
-                        fontWeight: 900,
-                        color: accent,
+                        fontFamily: "'Tenor Sans',serif",
+                        fontSize: isMobile ? 11 : 12,
+                        color: C.slate,
                       }}
                     >
-                      KSh {rate.price}
+                      Valid for {rate.validity}
                     </div>
                   </div>
                 ))}
@@ -2362,8 +2382,7 @@ const CtaBand = ({
             lineHeight: 1.65,
           }}
         >
-          Become part of the movement. . No contracts required
-          to start.
+          Become part of the movement. . No contracts required to start.
         </p>
         <button
           onClick={openJoin}
@@ -2399,7 +2418,7 @@ const CtaBand = ({
             color: C.slate,
           }}
         >
-          Cancel anytime · No hidden fees · 
+          Cancel anytime · No hidden fees ·
         </div>
       </div>
     </section>
@@ -2773,4 +2792,3 @@ export default function WorkoutWarehouse() {
     </>
   );
 }
-
