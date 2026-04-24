@@ -128,7 +128,7 @@ const VibeGrid = memo(
                       style={{
                         fontFamily: "'Tenor Sans',serif",
                         fontSize: isMobile ? 11 : 12,
-                        color: C.slate,
+                        color: "rgba(255,255,255,.65)",
                         marginTop: 4,
                       }}
                     >

@@ -115,9 +115,8 @@ const Footer = memo(() => {
             <div style={{ marginTop: 20, display: "flex", gap: 14 }}>
               {[
                 { k: "IG", href: "https://instagram.com/workoutwarehouse_ke" },
-                { k: "TW", href: "https://twitter.com/workoutwarehouse" },
+                { k: "FB", href: "https://facebook.com/workoutwarehouse" },
                 { k: "TK", href: "https://tiktok.com/@workoutwarehouse" },
-                { k: "YT", href: "https://youtube.com/@workoutwarehouse" },
                 { k: "WS", wa: true },
               ].map(({ k, wa, href }) => (
                 <a

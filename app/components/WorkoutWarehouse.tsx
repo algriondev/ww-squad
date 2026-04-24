@@ -785,7 +785,7 @@ const Hero = ({ openJoin }: { openJoin: () => void }) => {
           style={{
             fontFamily: "'Tenor Sans',serif",
             fontSize: isMobile ? 17 : 21,
-            color: C.slateL,
+            color: C.white,
             marginTop: 14,
             fontStyle: "italic",
             letterSpacing: ".02em",
@@ -1017,29 +1017,32 @@ const WhySection = ({ accent }: { accent: string }) => {
             style={{
               fontFamily: "'Tenor Sans',serif",
               fontSize: isMobile ? 15 : 17,
-              color: C.slateL,
+              color: C.white,
               marginTop: 20,
               lineHeight: 1.7,
               maxWidth: 480,
             }}
           >
-            WORKOUT WAREHOUSE blends elite luxury, raw intensity, lightning-fast
-            convenience, and a tech-powered community — into one obsessive,
-            members-first experience built for 2026. Every space. Every session.
-            Every second — engineered for you and your squad.
+            Workout Warehouse is a premium commercial gym located at Highway
+            Mall (opposite Nyayo Stadium), spanning 15,000 sq ft of
+            thoughtfully designed training space across two expansive floors —
+            with multiple dedicated training zones, 5–8 studio classes daily, a
+            fully equipped spin studio, and high-pressure showers and steam
+            rooms for post-workout recovery.
           </p>
           <p
             style={{
               fontFamily: "'Tenor Sans',serif",
               fontSize: isMobile ? 14 : 16,
-              color: C.slate,
+              color: "#d4d8e0",
               marginTop: 16,
               lineHeight: 1.65,
               maxWidth: 480,
             }}
           >
-            Every space. Every session. Every second — designed around you and
-            your squad.
+            Our mission: to make fitness accessible, convenient, and sustainable
+            — by providing world-class facilities, expert coaching, and recovery
+            services that support every member at every stage of their journey.
           </p>
         </div>
 
@@ -1895,7 +1898,7 @@ const PricingScheduleSection = memo(({ accent }: { accent: string }) => {
                             fontFamily: "'Inter Tight',sans-serif",
                             fontSize: isMobile ? 13 : 14,
                             fontWeight: 700,
-                            color: C.slateL,
+                            color: "#d4d8e0",
                             textAlign: "right",
                             padding: isMobile ? "14px 18px" : "16px 24px",
                           }}
@@ -2375,7 +2378,7 @@ const CtaBand = ({
           style={{
             fontFamily: "'Tenor Sans',serif",
             fontSize: isMobile ? 15 : 17,
-            color: C.slateL,
+            color: C.white,
             marginTop: 16,
             maxWidth: 480,
             margin: "16px auto 0",
@@ -2410,16 +2413,6 @@ const CtaBand = ({
         >
           JOIN THE SQUAD
         </button>
-        <div
-          style={{
-            marginTop: 18,
-            fontFamily: "'Tenor Sans',serif",
-            fontSize: 12,
-            color: C.slate,
-          }}
-        >
-          Cancel anytime · No hidden fees ·
-        </div>
       </div>
     </section>
   );

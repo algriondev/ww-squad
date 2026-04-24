@@ -90,7 +90,7 @@ const CoachCard = memo(({ coach, accent }: { coach: any; accent: string }) => {
           style={{
             fontFamily: "'Tenor Sans',serif",
             fontSize: 13,
-            color: C.slate,
+            color: "#d4d8e0",
             marginTop: 3,
           }}
         >
@@ -101,7 +101,7 @@ const CoachCard = memo(({ coach, accent }: { coach: any; accent: string }) => {
             style={{
               fontFamily: "'Inter Tight',sans-serif",
               fontSize: 10,
-              color: C.slateL,
+              color: "#c0c4cc",
               background: "rgba(255,255,255,.06)",
               padding: "4px 10px",
               borderRadius: 6,
@@ -114,7 +114,7 @@ const CoachCard = memo(({ coach, accent }: { coach: any; accent: string }) => {
             style={{
               fontFamily: "'Inter Tight',sans-serif",
               fontSize: 10,
-              color: C.slateL,
+              color: "#c0c4cc",
               background: "rgba(255,255,255,.06)",
               padding: "4px 10px",
               borderRadius: 6,
