@@ -272,16 +272,24 @@ const FaqSection = memo(() => {
   const isMobile = w < 768;
   const faqs = [
     {
-      q: "What are your opening hours?",
-      a: "We're open 5am-9:30 PM Monday-Friday, 7am-5pm on Saturdays and 7am-3pm on Sundays",
+      q: "What's included in my membership?",
+      a: "Full access to our gym floor, multiple training zones, 5–8 daily studio classes, and showers & steam rooms.",
     },
     {
-      q: "How can I cancel or freeze my membership?",
-      a: "Log into your account or contact support 30 days prior to billing.",
+      q: "Are classes included in the membership?",
+      a: "Yes — all classes, including spin, strength, HIIT, and functional training, are included at no extra charge.",
     },
     {
-      q: "Do you offer student discounts?",
-      a: "Yes, we have reduced rates for students. See the pricing tab above.",
+      q: "What types of membership plans do you offer?",
+      a: "We offer flexible options: Day Pass, Monthly, Quarterly, and Annual memberships.",
+    },
+    {
+      q: "Is Workout Warehouse suitable for beginners?",
+      a: "Absolutely. All classes and training zones cater to beginners, intermediate, and advanced levels. Our coaches welcome first-timers and help them feel at home.",
+    },
+    {
+      q: "What should I bring on my first visit?",
+      a: "Gym wear, a water bottle, and a towel. Everything else is already here.",
     },
   ];
   return (
