@@ -604,9 +604,9 @@ const JoinModal = memo(({ onClose }: { onClose: () => void }) => {
                   <div style={{ fontSize: 14, fontWeight: 900, marginTop: 8, color: level.color }}>
                     KES {level.price.toLocaleString()}
                   </div>
-                  {level.firstMonth && (
+                  {"firstMonth" in level && level.firstMonth && (
                     <div style={{ fontSize: 10, color: C.slate, marginTop: 6 }}>
-                      First month: KES {level.firstMonth.toLocaleString()}
+                      First month: KES {(level.firstMonth as number).toLocaleString()}
                     </div>
                   )}
                 </button>
